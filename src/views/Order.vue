@@ -1,37 +1,64 @@
 <template>
   <div class="w-full flex">
-    <div class="bg-dark w-1/3 p-8 flex flex-wrap gap-4 content-start">
-      <router-link
+    <div class="bg-dark w-1/3 p-8 flex flex-wrap gap-4 content-start overflow-y-scroll scrollbar-hidden">
+      <CategoryCard
         v-for="category in categories"
         :key="category._id"
-        :to="`/order/${category._id}`">
-        <Card
-          :title="category.name"
-          :color="category.color"
-        />
-      </router-link>
-
-      <TButton @click="$store.dispatch('items/fetchCategories')">Fetch</TButton>
+        :title="category.name"
+        :color="category.color"
+        @click.native="categoryClick(category._id)"
+      />
     </div>
-    <router-view />
+    <div
+      class="bg-dark w-1/3 p-8 flex flex-wrap gap-4 content-start overflow-y-scroll scrollbar-hidden">
+      <ItemCard v-for="item in items" :key="item._id" :title="item.name" />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import Card from "@/components/Card.vue";
+import ItemCard from "@/components/ItemCard.vue";
+import CategoryCard from "@/components/CategoryCard.vue";
 import { itemsModule } from "@/store/modules/items";
+import { Category } from "@/models/category";
+import { Item } from "@/models/item";
 
 @Component({
   components: {
-    Card,
+    CategoryCard,
+    ItemCard
   },
 })
 export default class Order extends Vue {
+  private categoryId!: string;
 
-  get categories() {
-    return itemsModule.categories
+  created(): void {
+    itemsModule.fetchCategories();
   }
 
+  categoryClick(categoryId: string): void {
+    this.categoryId = categoryId;
+    itemsModule.fetchItems(this.categoryId);
+  }
+
+  get categories(): Category[] {
+    return itemsModule.categories;
+  }
+
+  get items(): Item[] | undefined {
+    return itemsModule.currentItems;
+  }
 }
 </script>
+
+<style scoped>
+.scrollbar-hidden {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none; /* Chrome */
+}
+</style>

@@ -11,13 +11,7 @@ const routes: Array<RouteConfig> = [
     path: '/order',
     alias: '/',
     name: 'Order',
-    component: Order,
-    children: [
-      {
-        path: ':id',
-        component: Items
-      }
-    ]
+    component: Order
   },
   {
     path: '/tx',

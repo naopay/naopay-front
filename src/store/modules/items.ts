@@ -6,7 +6,12 @@ import store from "@/store/store";
 
 @Module
 class ItemsModule extends VuexModule {
+    currentCategory: Category | undefined = undefined;
     categories: Category[] = []
+
+    get currentItems(): Item[] | undefined {
+        return this.currentCategory?.items
+    }
 
     @Mutation
     setCategories(categories: Category[]) {
@@ -18,6 +23,7 @@ class ItemsModule extends VuexModule {
         const category = this.categories.find(cat => cat._id === params.categoryId)
         if (category) {
             category.items = params.items
+            this.currentCategory = category
         }
     }
 
