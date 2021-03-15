@@ -27,12 +27,12 @@ import { Item } from "@/models/item";
   components: {
     Categories,
     Items,
-	Extras
+    Extras
   },
 })
 export default class Order extends Vue {
-	get currentItem(): Item | undefined {
-		return itemsModule.currentItem
-	}
+  get currentItem(): Item | undefined {
+    return itemsModule.currentItem
+  }
 }
 </script>

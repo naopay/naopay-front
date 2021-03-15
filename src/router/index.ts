@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Order from '@/views/Order.vue'
-import Items from '@/views/Items.vue'
 import Transactions from '@/views/Transactions.vue'
 
 Vue.use(VueRouter)

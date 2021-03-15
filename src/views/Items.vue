@@ -24,7 +24,7 @@ import { Item } from "@/models/item";
 })
 export default class Order extends Vue {
   onClick(item: Item): void {
-	itemsModule.selectItem(item._id)
+    itemsModule.selectItem(item._id);
   }
 
   get items(): Item[] {

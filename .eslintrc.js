@@ -12,7 +12,18 @@ module.exports = {
     ecmaVersion: 2020
   },
   rules: {
-    "@typescript-eslint/member-delimiter-style": ["warn"],
+    'indent': ["error", 2],
+    '@typescript-eslint/member-delimiter-style': ['error', {
+      "multiline": {
+        "delimiter": "none",
+        "requireLast": false
+      },
+      "singleline": {
+        "delimiter": "semi",
+        "requireLast": false
+      }
+    }],
+    '@typescript-eslint/no-var-requires': 0,
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off'
   }
