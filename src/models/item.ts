@@ -1,4 +1,4 @@
-import { Choice } from "./choice";
+import { Extra } from "./extra";
 
 export interface Item {
     _id: string;
@@ -7,6 +7,5 @@ export interface Item {
     price: number;
     available: boolean;
     category: string; // category id
-    extra: Choice[];
-    options: Choice[][];
+    extras: Extra[];
 }

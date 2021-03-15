@@ -1,16 +1,22 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
+import store from "@/store";
 import { http } from "@/plugins/http";
 import { Category } from "@/models/category";
 import { Item } from "@/models/item";
-import store from "@/store";
+import { Extra } from "@/models/extra";
 
 @Module
 class ItemsModule extends VuexModule {
     currentCategory: Category | undefined = undefined;
+    currentItem: Item | undefined = undefined;
     categories: Category[] = []
 
     get currentItems(): Item[] {
         return this.currentCategory?.items ?? []
+    }
+
+    get currentExtras(): Extra[] {
+        return this.currentItem?.extras ?? []
     }
 
     @Mutation
@@ -27,6 +33,12 @@ class ItemsModule extends VuexModule {
         }
     }
 
+    @Mutation
+    setCurrentItem(item: Item) {
+        this.currentItem = item;
+        console.log(this.currentItem)
+    }
+
     @Action
     async fetchCategories() {
         const res = await http.get('/categories');
@@ -36,11 +48,18 @@ class ItemsModule extends VuexModule {
     }
 
     @Action
-    async fetchItems(categoryId: string) {
+    async selectCategory(categoryId: string) {
         const res = await http.get<Item[]>(`/categories/${categoryId}`)
         if (res.status === 200) {
             this.setCategoryItems({ categoryId: categoryId, items: res.data })
         }
+    }
+
+    @Action
+    selectItem(itemId: string) {
+        const selected = this.currentCategory?.items.find(it => it._id === itemId)
+        if (!selected) return;
+        this.setCurrentItem(selected);
     }
 }
 
