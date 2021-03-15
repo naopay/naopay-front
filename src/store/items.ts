@@ -2,15 +2,15 @@ import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
 import { http } from "@/plugins/http";
 import { Category } from "@/models/category";
 import { Item } from "@/models/item";
-import store from "@/store/store";
+import store from "@/store";
 
 @Module
 class ItemsModule extends VuexModule {
     currentCategory: Category | undefined = undefined;
     categories: Category[] = []
 
-    get currentItems(): Item[] | undefined {
-        return this.currentCategory?.items
+    get currentItems(): Item[] {
+        return this.currentCategory?.items ?? []
     }
 
     @Mutation

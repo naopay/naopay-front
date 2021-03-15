@@ -9,7 +9,9 @@ module.exports = {
         light: '#0f3460',
         lighter: '#F2ECFF',
         confirm: '#00C896',
-        cancel: '#e94560'
+        cancel: '#e94560',
+        selected: '#2c476d',
+        unselected: '#213552'
       },
     },
   },

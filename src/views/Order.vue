@@ -20,7 +20,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import ItemCard from "@/components/ItemCard.vue";
 import CategoryCard from "@/components/CategoryCard.vue";
-import { itemsModule } from "@/store/modules/items";
+import { itemsModule } from "@/store/items";
 import { Category } from "@/models/category";
 import { Item } from "@/models/item";
 
