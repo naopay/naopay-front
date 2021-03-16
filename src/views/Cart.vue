@@ -1,7 +1,7 @@
 <template>
   <div>
     <ul>
-      <li v-for="(item, index) in cartItems" :key="index">
+      <li v-for="item in cartItems" :key="item._id + item.extras.map(e => e._id).join('')">
         {{ item.count }} {{ item.name }}
         <ul v-if="item.extras.length">
           <li v-for="extra in item.extras" :key="extra._id">

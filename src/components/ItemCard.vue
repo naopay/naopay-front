@@ -1,6 +1,6 @@
 <template>
   <Card :class="`bg-${color}`" @click.native="click">
-    <div class="text-3xl font-medium">{{ item.name }}</div>
+    <div class="text-3xl font-medium text-left">{{ item.name }}</div>
     <div class="text-xl">0 item</div>
   </Card>
 </template>

@@ -46,7 +46,7 @@ export default class Order extends Vue {
   }
 
   addToCart(): void {
-    const cartItem = new CartItem(this.item!._id, this.extraIds)
+    const cartItem = new CartItem(this.item!._id, [...this.extraIds])
     cartModule.addToCart(cartItem)
   }
 

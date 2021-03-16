@@ -16,7 +16,8 @@ class CartModule extends VuexModule {
       }
       
       const item = this.copy(original)
-      item.extras.filter(extra => cartItem.extraIds?.some(id => id === extra._id))
+      item.extras = item.extras.filter(extra => 
+        cartItem.extraIds!.some(id => id === extra._id))
       item.count = cartItem.count
       return item
     }) as Item[]
@@ -57,10 +58,7 @@ class CartModule extends VuexModule {
 
   @Action
   addToCart(cartItem: CartItem) {
-    const existing = this.cartItems.find(it => {
-      console.log(it)
-      console.log(cartItem)
-      this.itemsEqual(it, cartItem)})
+    const existing = this.cartItems.find(it => this.itemsEqual(it, cartItem))
     if (existing) {
       this.increment({ cartItem: existing, incrementBy: cartItem.count })
     } else {

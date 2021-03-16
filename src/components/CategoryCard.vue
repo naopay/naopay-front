@@ -1,6 +1,6 @@
 <template>
   <Card :class="`bg-${bgColor}`" :animated="true">
-    <div class="text-3xl font-medium">{{ category.name }}</div>
+    <div class="text-3xl font-medium text-left">{{ category.name }}</div>
     <div class="text-xl">0 item</div>
   </Card>
 </template>

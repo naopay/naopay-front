@@ -20,7 +20,7 @@ class ItemsModule extends VuexModule {
     }
 
     get allItems(): Item[] {
-      return this.categories.flatMap(cat => cat.items)
+      return this.categories.flatMap(cat => cat.items || [])
     }
 
     @Mutation
