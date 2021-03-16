@@ -5,18 +5,17 @@
     <CategoryCard
       v-for="category in categories"
       :key="category._id"
-      :title="category.name"
-      :color="category.color"
+      :category="category"
       @click.native="onClick(category)"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import CategoryCard from "@/components/CategoryCard.vue";
-import { itemsModule } from "@/store/items";
-import { Category } from "@/models/category";
+import { Component, Vue } from "vue-property-decorator"
+import CategoryCard from "@/components/CategoryCard.vue"
+import { itemsModule } from "@/store/items"
+import { Category } from "@/models/category"
 
 @Component({
   components: {

@@ -1,13 +1,20 @@
 <template>
-  <span class="material-icons-outlined text-4xl">
-    <slot></slot>
+  <span :class="outlined ? 'material-icons-outlined' : 'material-icons'">
+    {{ name }}
   </span>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
 export default class Icon extends Vue {
+  
+  @Prop()
+  private name!: string
+
+  @Prop({default: false})
+  private outlined!: boolean
+
 }
 </script>

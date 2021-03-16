@@ -1,6 +1,13 @@
-export interface CartItem {
-  itemId: string
+export class CartItem {
   count: number
-  extraIds: string[]
-  optionIds: string[]
+
+  constructor(
+    public itemId: string,
+    public extraIds?: string[]
+  ) {
+    this.count = 1
+    if (!extraIds) {
+      this.extraIds = []
+    }
+  }
 }

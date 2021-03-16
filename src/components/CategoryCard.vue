@@ -1,11 +1,12 @@
 <template>
-  <Card :class="`bg-${bgColor}`">
-    <div class="text-3xl font-medium">{{ title }}</div>
+  <Card :class="`bg-${bgColor}`" :animated="true">
+    <div class="text-3xl font-medium">{{ category.name }}</div>
     <div class="text-xl">0 item</div>
   </Card>
 </template>
 
 <script lang="ts">
+import { Category } from '@/models/category';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import Card from './Card.vue';
 
@@ -26,13 +27,10 @@ export default class CategoryCard extends Vue {
   ];
 
   @Prop()
-  private title!: string;
-
-  @Prop({default: 0})
-  private color!: number;
+  private category!: Category;
 
   get bgColor() {
-    return CategoryCard.COLORS[this.color];
+    return CategoryCard.COLORS[this.category.color ?? 0];
   }
 
 }

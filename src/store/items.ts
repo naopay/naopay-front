@@ -19,6 +19,10 @@ class ItemsModule extends VuexModule {
       return this.currentItem?.extras ?? []
     }
 
+    get allItems(): Item[] {
+      return this.categories.flatMap(cat => cat.items)
+    }
+
     @Mutation
     setCategories(categories: Category[]) {
       this.categories = categories

@@ -7,7 +7,7 @@
         'bg-transparent text-gray-400'
     ]"
   >
-    <Icon>{{ icon }}</Icon>
+    <Icon :name="icon" :outlined="true" class="text-4xl"/>
   </router-link>
 </template>
 

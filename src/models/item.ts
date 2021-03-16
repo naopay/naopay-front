@@ -8,4 +8,6 @@ export interface Item {
   available: boolean
   category: string // category id
   extras: Extra[]
+
+  count?: number // front use only
 }
