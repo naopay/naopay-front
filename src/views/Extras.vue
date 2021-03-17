@@ -11,13 +11,17 @@
         @click.native="select(extra)"
       />
     </div>
-    <TButton @click.native="addToCart">Add to cart</TButton>
+    <div class="flex">
+      <ItemCounter />
+      <TButton @click.native="addToCart">Add to cart</TButton>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import ExtraCard from "@/components/ExtraCard.vue";
+import ItemCounter from "@/components/ItemCounter.vue";
 import { itemsModule } from "@/store/items";
 import { Extra } from "@/models/extra";
 import { Item } from "@/models/item";
@@ -27,6 +31,7 @@ import { CartItem } from "@/models/cartItem";
 @Component({
   components: {
     ExtraCard,
+    ItemCounter
   },
 })
 export default class Order extends Vue {

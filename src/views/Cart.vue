@@ -1,7 +1,7 @@
 <template>
   <div>
-    <ul>
-      <li v-for="item in cartItems" :key="item._id + item.extras.map(e => e._id).join('')">
+    <ul class="text-white">
+      <li v-for="(item, index) in items" :key="index">
         {{ item.count }} {{ item.name }}
         <ul v-if="item.extras.length">
           <li v-for="extra in item.extras" :key="extra._id">
@@ -20,7 +20,7 @@ import { Component, Vue } from "vue-property-decorator"
 @Component
 export default class Cart extends Vue {
 
-  get cartItems() {
+  get items() {
     return cartModule.items
   }
 }

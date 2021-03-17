@@ -1,5 +1,14 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
+  <div>
+    <h1>Transactions</h1>
   </div>
 </template>
+
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator"
+
+@Component
+export default class Transactions extends Vue {
+
+}
+</script>

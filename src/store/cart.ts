@@ -9,8 +9,10 @@ class CartModule extends VuexModule {
   cartItems: CartItem[] = []
 
   get items(): Item[] {
+    const allItems = itemsModule.categories.flatMap(cat => cat.items || [])
+
     return this.cartItems.map(cartItem => {
-      const original = itemsModule.allItems.find(it => it._id === cartItem.itemId)
+      const original = allItems.find(it => it._id === cartItem.itemId)
       if (!original) {
         return undefined
       }
@@ -20,7 +22,7 @@ class CartModule extends VuexModule {
         cartItem.extraIds!.some(id => id === extra._id))
       item.count = cartItem.count
       return item
-    }) as Item[]
+    }).filter(it => it) as Item[]
   }
 
   private itemsEqual(it1: CartItem, it2: CartItem): boolean {

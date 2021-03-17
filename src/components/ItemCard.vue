@@ -1,7 +1,8 @@
 <template>
-  <Card :class="`bg-${color}`" @click.native="click">
-    <div class="text-3xl font-medium text-left">{{ item.name }}</div>
-    <div class="text-xl">0 item</div>
+  <Card :class="`bg-${color}`">
+    <div class="text-5xl font-medium">{{ count }}</div>
+    <div class="text-2xl font-medium text-left">{{ item.name }}</div>
+    <div>${{ item.price }}</div>
   </Card>
 </template>
 
@@ -17,13 +18,13 @@ import Card from "./Card.vue";
 })
 export default class ItemCard extends Vue {
   @Prop()
-  private item!: Item;
+  private item!: Item
 
-  private selected = false;
+  @Prop({default: 0})
+  private count!: number
 
-  private click(): void {
-    this.selected = !this.selected;
-  }
+  @Prop({default: false})
+  private selected!: boolean
 
   get color() {
     return this.selected ? "selected" : "unselected"

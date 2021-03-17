@@ -19,10 +19,6 @@ class ItemsModule extends VuexModule {
       return this.currentItem?.extras ?? []
     }
 
-    get allItems(): Item[] {
-      return this.categories.flatMap(cat => cat.items || [])
-    }
-
     @Mutation
     setCategories(categories: Category[]) {
       this.categories = categories
@@ -44,6 +40,8 @@ class ItemsModule extends VuexModule {
 
     @Action
     async fetchCategories() {
+      if (this.categories?.length) return;
+      
       const res = await http.get('/categories')
       if (res.status === 200) {
         this.setCategories(res.data)

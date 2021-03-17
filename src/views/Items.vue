@@ -6,6 +6,8 @@
       v-for="item in items"
       :key="item._id"
       :item="item"
+      :selected="isInCart(item._id)"
+      :count="getCartCount(item._id)"
       @click.native="onClick(item)"
     />
   </div>
@@ -32,6 +34,15 @@ export default class Order extends Vue {
     } else {
       cartModule.addToCart(new CartItem(item._id))
     }
+  }
+
+  getCartCount(itemId: string): number {
+    return cartModule.cartItems.filter(it => it.itemId === itemId)
+      .map(it => it.count).reduce((a, b) => a + b, 0)
+  }
+
+  isInCart(itemId: string): boolean {
+    return cartModule.cartItems.some(it => it.itemId === itemId)
   }
 
   get items(): Item[] {
