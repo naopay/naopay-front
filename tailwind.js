@@ -20,6 +20,7 @@ module.exports = {
       scale: ['active'],
       opacity: ['disabled'],
       cursor: ['disabled'],
+      backgroundColor: ['active'],
     },
   },
   plugins: [

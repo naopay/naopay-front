@@ -1,11 +1,10 @@
 export class CartItem {
-  count: number
 
   constructor(
     public itemId: string,
-    public extraIds?: string[]
+    public extraIds?: string[],
+    public count: number = 1
   ) {
-    this.count = 1
     if (!extraIds) {
       this.extraIds = []
     }

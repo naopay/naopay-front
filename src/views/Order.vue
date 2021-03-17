@@ -1,10 +1,9 @@
 <template>
-  <div class="w-full flex p-8 bg-dark">
-    <Categories class="w-1/3" />
-
-    <Items v-if="!currentItem" class="w-1/3" />
-    <Extras v-else-if="currentExtras.length" class="w-1/3" />
-    <Cart/>
+  <div class="w-full flex gap-8 p-8 bg-dark select-none">
+    <Categories class="flex-1" />
+    <Items v-if="!currentItem" class="flex-1" />
+    <Extras v-else-if="currentExtras.length" class="flex-1" />
+    <Cart class="flex-1"/>
   </div>
 </template>
 

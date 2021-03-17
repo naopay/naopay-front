@@ -25,6 +25,13 @@ class CartModule extends VuexModule {
     }).filter(it => it) as Item[]
   }
 
+  get totalAmount() {
+    return this.items.map(it => {
+      return (it.count! * it.price) 
+        + it.count! * (it.extras.map(e => e.price).reduce((a, b) => a + b, 0))
+    }).reduce((a, b) => a + b, 0)
+  }
+
   private itemsEqual(it1: CartItem, it2: CartItem): boolean {
     return it1.itemId === it2.itemId
       && JSON.stringify(it1.extraIds?.sort()) == JSON.stringify(it2.extraIds?.sort())
@@ -65,6 +72,10 @@ class CartModule extends VuexModule {
       this.increment({ cartItem: existing, incrementBy: cartItem.count })
     } else {
       this.push(cartItem)
+    }
+
+    if (cartItem.extraIds?.length) {
+      itemsModule.setCurrentItem(undefined)
     }
   }
 

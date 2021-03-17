@@ -38,7 +38,7 @@ export default class Order extends Vue {
 
   getCartCount(itemId: string): number {
     return cartModule.cartItems.filter(it => it.itemId === itemId)
-      .map(it => it.count).reduce((a, b) => a + b, 0)
+      .map(it => it.count || 0).reduce((a, b) => a + b, 0)
   }
 
   isInCart(itemId: string): boolean {

@@ -1,7 +1,7 @@
 <template>
   <Card :class="`bg-${bgColor}`" :animated="true">
     <div class="text-3xl font-medium text-left">{{ category.name }}</div>
-    <div class="text-xl">0 item</div>
+    <div class="text-xl">{{ itemCount }} item{{ itemCount > 1 ? 's' : ''}}</div>
   </Card>
 </template>
 
@@ -27,10 +27,13 @@ export default class CategoryCard extends Vue {
   ];
 
   @Prop()
-  private category!: Category;
+  private category!: Category
+
+  @Prop({default: 0})
+  private itemCount!: number
 
   get bgColor() {
-    return CategoryCard.COLORS[this.category.color ?? 0];
+    return CategoryCard.COLORS[this.category.color ?? 0]
   }
 
 }

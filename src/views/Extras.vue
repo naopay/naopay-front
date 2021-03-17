@@ -11,9 +11,9 @@
         @click.native="select(extra)"
       />
     </div>
-    <div class="flex">
-      <ItemCounter />
-      <TButton @click.native="addToCart">Add to cart</TButton>
+    <div class="flex gap-4">
+      <ItemCounter @change="itemCount = $event"/>
+      <TButton @click.native="addToCart" class="flex-1 text-2xl h-20">Add to cart</TButton>
     </div>
   </div>
 </template>
@@ -35,7 +35,8 @@ import { CartItem } from "@/models/cartItem";
   },
 })
 export default class Order extends Vue {
-  extraIds: string[] = []
+  private extraIds: string[] = []
+  private itemCount = 1
 
   isSelected(extra: Extra): boolean {
     return this.extraIds.some(id => id === extra._id)
@@ -51,7 +52,7 @@ export default class Order extends Vue {
   }
 
   addToCart(): void {
-    const cartItem = new CartItem(this.item!._id, [...this.extraIds])
+    const cartItem = new CartItem(this.item!._id, [...this.extraIds], this.itemCount)
     cartModule.addToCart(cartItem)
   }
 

@@ -2,7 +2,7 @@
   <Card :class="`bg-${color}`">
     <div class="text-5xl font-medium">{{ count }}</div>
     <div class="text-2xl font-medium text-left">{{ item.name }}</div>
-    <div>${{ item.price }}</div>
+    <div>${{ item.price.toFixed(2) }}</div>
   </Card>
 </template>
 
