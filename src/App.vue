@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="h-screen flex">
-    <Nav></Nav>
+    <Nav v-if="$route.name !== 'Signup'"></Nav>
     <router-view />
   </div>
 </template>
