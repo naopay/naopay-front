@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { nanoModule } from "@/store/modules/nano";
+import { nanoModule } from "@/store/nano";
 @Component({
   components: {},
 })
