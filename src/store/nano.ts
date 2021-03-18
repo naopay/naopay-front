@@ -1,10 +1,10 @@
-import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
-import {CryptoWeb} from "@/plugins/cryptoweb";
-import AES from 'crypto-js/aes';
+import { VuexModule, Module, Mutation, Action } from "vuex-class-modules"
+import {CryptoWeb} from "@/plugins/cryptoweb"
+import AES from 'crypto-js/aes'
 import CryptoJS from 'crypto-js'
 import * as nanocurrency from 'nanocurrency'
 import store from "@/store";
-import { WebAuthn } from "@/plugins/webauthn";
+import { WebAuthn } from "@/plugins/webauthn"
 
 @Module
 class NanoModule extends VuexModule {

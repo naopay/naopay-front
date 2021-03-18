@@ -1,8 +1,10 @@
 <template>
   <div class="w-full flex gap-8 p-8 bg-dark select-none">
     <Categories class="flex-1" />
-    <Items v-if="!currentItem" class="flex-1" />
-    <Extras v-else-if="currentExtras.length" class="flex-1" />
+    <transition name="fade" mode="out-in">
+      <Items v-if="!currentItem" class="flex-1" />
+      <Extras v-else-if="currentExtras.length" class="flex-1" />
+    </transition>
     <Cart class="flex-1"/>
   </div>
 </template>
@@ -35,3 +37,17 @@ export default class Order extends Vue {
   }
 }
 </script>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active {
+  opacity: 1;
+  transition: all 200ms ease;
+}
+.fade-enter {
+  opacity: 0;
+  transform: translateX(70px);
+}
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
