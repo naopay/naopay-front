@@ -11,3 +11,7 @@
     /* Chrome */
     display: none;
 }
+
+button:focus {
+    outline: none !important;
+}

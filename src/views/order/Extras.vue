@@ -26,7 +26,6 @@ import { itemsModule } from "@/store/items";
 import { Extra } from "@/models/extra";
 import { Item } from "@/models/item";
 import { cartModule } from "@/store/cart";
-import { CartItem } from "@/models/cartItem";
 
 @Component({
   components: {
@@ -35,29 +34,30 @@ import { CartItem } from "@/models/cartItem";
   },
 })
 export default class Order extends Vue {
-  private extraIds: string[] = []
+  private selectedExtras: Extra[] = []
   private itemCount = 1
 
   isSelected(extra: Extra): boolean {
-    return this.extraIds.some(id => id === extra._id)
+    return this.selectedExtras.some(e => e._id === extra._id)
   }
 
   select(extra: Extra): void {
-    const existingIndex = this.extraIds.findIndex((id) => id === extra._id)
+    const existingIndex = this.selectedExtras.findIndex(e => e._id === extra._id)
     if (existingIndex == -1) {
-      this.extraIds.push(extra._id)
+      this.selectedExtras.push(extra)
     } else {
-      this.extraIds.splice(existingIndex, 1)
+      this.selectedExtras.splice(existingIndex, 1)
     }
   }
 
   addToCart(): void {
-    const cartItem = new CartItem(this.item!._id, [...this.extraIds], this.itemCount)
-    cartModule.addToCart(cartItem)
+    cartModule.addToCart(
+      Item.copy(this.item, this.itemCount, this.selectedExtras)
+    )
   }
 
-  get item(): Item | undefined {
-    return itemsModule.currentItem
+  get item(): Item {
+    return itemsModule.currentItem!
   }
 
   get extras(): Extra[] {

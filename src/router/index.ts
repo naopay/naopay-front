@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
-import Order from '@/views/Order.vue'
-import Transactions from '@/views/Transactions.vue'
+import Order from '@/views/order/Order.vue'
+import Transactions from '@/views/transactions/Transactions.vue'
 
 Vue.use(VueRouter)
 

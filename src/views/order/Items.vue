@@ -19,7 +19,6 @@ import ItemCard from "@/components/ItemCard.vue"
 import { itemsModule } from "@/store/items"
 import { Item } from "@/models/item"
 import { cartModule } from "@/store/cart"
-import { CartItem } from "@/models/cartItem"
 
 @Component({
   components: {
@@ -32,17 +31,17 @@ export default class Order extends Vue {
     if (item.extras?.length) {
       itemsModule.selectItem(item._id)
     } else {
-      cartModule.addToCart(new CartItem(item._id))
+      cartModule.addToCart(Item.copy(item, 1))
     }
   }
 
   getCartCount(itemId: string): number {
-    return cartModule.cartItems.filter(it => it.itemId === itemId)
+    return cartModule.items.filter(it => it._id === itemId)
       .map(it => it.count || 0).reduce((a, b) => a + b, 0)
   }
 
   isInCart(itemId: string): boolean {
-    return cartModule.cartItems.some(it => it.itemId === itemId)
+    return cartModule.items.some(it => it._id === itemId)
   }
 
   get items(): Item[] {

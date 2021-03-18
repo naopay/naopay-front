@@ -9,10 +9,10 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator"
-import Categories from "@/views/Categories.vue"
-import Items from "@/views/Items.vue"
-import Extras from "@/views/Extras.vue"
-import Cart from "@/views/Cart.vue"
+import Categories from "@/views/order/Categories.vue"
+import Items from "@/views/order/Items.vue"
+import Extras from "@/views/order/Extras.vue"
+import Cart from "@/views/order/Cart.vue"
 import { itemsModule } from "@/store/items"
 import { Item } from "@/models/item"
 import { Extra } from "@/models/extra"

@@ -1,29 +1,11 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
 import store from "@/store";
-import { CartItem } from "@/models/cartItem";
 import { Item } from "@/models/item";
 import { itemsModule } from "./items";
 
 @Module
 class CartModule extends VuexModule {
-  cartItems: CartItem[] = []
-
-  get items(): Item[] {
-    const allItems = itemsModule.categories.flatMap(cat => cat.items || [])
-
-    return this.cartItems.map(cartItem => {
-      const original = allItems.find(it => it._id === cartItem.itemId)
-      if (!original) {
-        return undefined
-      }
-      
-      const item = this.copy(original)
-      item.extras = item.extras.filter(extra => 
-        cartItem.extraIds!.some(id => id === extra._id))
-      item.count = cartItem.count
-      return item
-    }).filter(it => it) as Item[]
-  }
+  items: Item[] = []
 
   get totalAmount() {
     return this.items.map(it => {
@@ -32,9 +14,10 @@ class CartModule extends VuexModule {
     }).reduce((a, b) => a + b, 0)
   }
 
-  private itemsEqual(it1: CartItem, it2: CartItem): boolean {
-    return it1.itemId === it2.itemId
-      && JSON.stringify(it1.extraIds?.sort()) == JSON.stringify(it2.extraIds?.sort())
+  private itemsEqual(it1: Item, it2: Item): boolean {
+    return it1._id === it2._id
+      && JSON.stringify(it1.extras.map(e => e._id).sort()) 
+      == JSON.stringify(it2.extras.map(e => e._id).sort())
   }
 
   private copy(item: Item): Item {
@@ -42,53 +25,57 @@ class CartModule extends VuexModule {
   }
 
   @Mutation
-  increment(params: { cartItem: CartItem; incrementBy: number }) {
-    params.cartItem.count += params.incrementBy <= 0 ? 1 : params.incrementBy
+  increment(params: { item: Item; incrementBy: number }) {
+    params.item.count += params.incrementBy <= 0 ? 1 : params.incrementBy
   }
 
   @Mutation
-  decrement(cartItem: CartItem) {
-    --cartItem.count
+  decrement(item: Item) {
+    --item.count
   }
 
   @Mutation
-  push(cartItem: CartItem) {
-    if (cartItem.count <= 0) {
-      cartItem.count = 1
+  push(item: Item) {
+    if (item.count <= 0) {
+      item.count = 1
     }
-    this.cartItems.push(cartItem)
+    this.items.push(item)
   }
 
   @Mutation
-  remove(cartItem: CartItem) {
-    const index = this.cartItems.findIndex(it => this.itemsEqual(it, cartItem))
-    this.cartItems.splice(index, 1)
+  remove(item: Item) {
+    const index = this.items.findIndex(it => this.itemsEqual(it, item))
+    if (index === -1) return
+    this.items.splice(index, 1)
   }
 
   @Action
-  addToCart(cartItem: CartItem) {
-    const existing = this.cartItems.find(it => this.itemsEqual(it, cartItem))
+  addToCart(item: Item) {
+    const existing = this.items.find(it => this.itemsEqual(it, item))
     if (existing) {
-      this.increment({ cartItem: existing, incrementBy: cartItem.count })
+      this.increment({ item: existing, incrementBy: item.count })
     } else {
-      this.push(cartItem)
+      this.push(item)
     }
-
-    if (cartItem.extraIds?.length) {
-      itemsModule.setCurrentItem(undefined)
-    }
+    
+    itemsModule.setCurrentItem(undefined)
   }
 
   @Action
-  removeFromCart(cartItem: CartItem) {
-    const existing = this.cartItems.find(it => this.itemsEqual(it, cartItem))
+  removeFromCart(item: Item) {
+    const existing = this.items.find(it => this.itemsEqual(it, item))
     if (!existing) return
 
     if (existing.count > 1) {
       this.decrement(existing)
     } else {
-      this.remove(cartItem)
+      this.remove(item)
     }
+  }
+
+  @Action
+  removeAllFromCart(item: Item) {
+    this.remove(item)
   }
 }
 
