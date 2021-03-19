@@ -1,20 +1,20 @@
 export interface MessageBlock {
-  account: string,
-  amount: string,
-  hash: string,
+  account: string
+  amount: string
+  hash: string
   block: TransactionBlock
 }
 
 export interface TransactionBlock {
-  type: string,
-  account: string,
-  previous: string,
-  representative: string,
-  balance: string,
-  link: string,
-  link_as_account: string,
-  signature: string,
-  work: string,
+  type: string
+  account: string
+  previous: string
+  representative: string
+  balance: string
+  link: string
+  link_as_account: string
+  signature: string
+  work: string
   subtype: string
 }
 

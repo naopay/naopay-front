@@ -1,72 +1,105 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-class-modules"
-import {CryptoWeb} from "@/plugins/cryptoweb"
+import { CryptoWeb } from "@/plugins/cryptoweb"
 import AES from 'crypto-js/aes'
 import CryptoJS from 'crypto-js'
-import * as nanocurrency from 'nanocurrency'
 import store from "@/store";
 import { WebAuthn } from "@/plugins/webauthn"
+import router from "@/router"
+import { wallet } from 'nanocurrency-web'
 
 @Module
 class NanoModule extends VuexModule {
-    seed = "";
-    username = "";
-    connected = false;
+  seed = "";
+  username = "";
+  connected = false;
+  privateKey = ""
+  publicKey = ""
+  address = ""
 
+  
 
-    @Action
-    async generateSeed() {
-      const seed = await nanocurrency.generateSeed();
-      const privateKey = nanocurrency.deriveSecretKey(seed, 0);
-      const publicKey = nanocurrency.derivePublicKey(privateKey);
-      const address = nanocurrency.deriveAddress(publicKey);
-      const safeArray = CryptoJS.enc.Hex.stringify(CryptoJS.lib.WordArray.random(32))
+  @Action
+  async generateSeed() {
+    const w = wallet.generate();
+    const seed = w.seed;
+    
+    const privateKey = w.accounts[0].privateKey;
+    const publicKey = w.accounts[0].publicKey;
+    const address = w.accounts[0].address;
+    const safeArray = CryptoJS.enc.Hex.stringify(CryptoJS.lib.WordArray.random(32))
+    localStorage.setItem('publickey',publicKey);
+    localStorage.setItem('address',address);
+    this.setSeed(seed)
+    this.setPublicKey(publicKey)
+    this.setUsername(publicKey);
+    this.setAddress(address);
+    const cipher = AES.encrypt(privateKey, safeArray).toString();
 
-      this.setSeed(seed)
-      this.setUsername(publicKey);
+    const keyPair = await CryptoWeb.makeKeys();
+    const enc = new TextEncoder();
 
-      const cipher = AES.encrypt(privateKey, safeArray).toString();
+    await CryptoWeb.encryptDataSaveKey(enc.encode(safeArray), keyPair)
 
-      const keyPair = await CryptoWeb.makeKeys();
-      const enc = new TextEncoder();
+    const registerSuccess = await WebAuthn.registerWebAuthn(publicKey, cipher)
 
-      await CryptoWeb.encryptDataSaveKey(enc.encode(safeArray), keyPair)
-
-      const registerSuccess = await WebAuthn.registerWebAuthn(publicKey, cipher)
-
-      if (registerSuccess) {
-        // TODO Successful register
-      } else {
-        throw new Error("Sign In KO")
-      }
-
+    if (registerSuccess) {
+      // TODO Successful register
+    } else {
+      throw new Error("Sign In KO")
     }
 
+  }
+  @Mutation
+  setAddress(address: string) {
+    this.address = address;
+  }
 
-    @Action
-    async login() {
-      const privateKey = await WebAuthn.loginWebAuthn(this.username);
-      if (privateKey) {
-        this.setConnected(true);
-      } else {
-        throw new Error("Login not working");
-      }
+  @Mutation
+  setPrivateKey(pk: string) {
+    this.privateKey = pk;
+  }
+
+  @Mutation
+  setPublicKey(pk: string) {
+    this.publicKey = pk;
+  }
+
+
+  @Action
+  async login() {
+    if (!this.username) {
+      const publicKey = localStorage.getItem('publickey');
+      const address = localStorage.getItem("address")
+      if (!publicKey || !address) throw new Error("Please register");
+      this.setPublicKey(publicKey)
+      this.setUsername(publicKey)
+      this.setAddress(address)
     }
-
-
-    @Mutation
-    setSeed(seed: string) {
-      this.seed = seed;
+    const privateKey = await WebAuthn.loginWebAuthn(this.username);
+    if (privateKey) {
+      this.setPrivateKey(privateKey)
+      this.setConnected(true);
+      router.push('/order')
+    } else {
+      throw new Error("Login not working");
     }
+  }
 
-    @Mutation
-    setConnected(state: boolean) {
-      this.connected = state;
-    }
 
-    @Mutation
-    setUsername(username: string) {
-      this.username = username;
-    }
+  @Mutation
+  setSeed(seed: string) {
+    this.seed = seed;
+  }
+
+  @Mutation
+  setConnected(state: boolean) {
+    this.connected = state;
+  }
+
+  @Mutation
+  setUsername(username: string) {
+    this.username = username;
+  }
 
   /*
     async generateWallet(): Promise<Wallet> {
