@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-y-8 justify-between text-white">
     <div class="flex justify-between items-center h-20 bg-unselected rounded shadow">
       <div class="ml-8 text-lg">
-        $1 ≈ {{ ticker.toFixed(2) }} ⋰⋅⋰
+        1 ⋰⋅⋰ ≈ ${{ ticker.toFixed(2) }}
       </div>
       <button @click="clearCart" class="w-20">
         <Icon name="clear"/>

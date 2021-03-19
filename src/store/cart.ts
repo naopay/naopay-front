@@ -16,7 +16,7 @@ class CartModule extends VuexModule {
   }
 
   get totalNanoAmount(): number {
-    return this.totalAmount * tickerModule.price
+    return this.totalAmount / tickerModule.price
   }
 
   private itemsEqual(it1: Item, it2: Item): boolean {
