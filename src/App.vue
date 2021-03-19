@@ -9,7 +9,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Nav from '@/components/Nav.vue'
 import { tickerModule } from './store/ticker';
-import { cartModule } from './store/cart';
+import { terminalWSModule } from './store/terminal-ws';
 
 @Component({
   components: {
@@ -20,7 +20,7 @@ export default class App extends Vue {
 
   created() {
     tickerModule.subscribeWebsocket()
-    cartModule.registerSocket()
+    terminalWSModule.registerSocket()
   }
   
 }

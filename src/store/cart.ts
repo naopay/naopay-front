@@ -3,16 +3,15 @@ import store from "@/store"
 import { Item } from "@/models/item"
 import { itemsModule } from "./items"
 import { tickerModule } from "./ticker"
-import socketio from "socket.io-client"
+import { terminalWSModule } from "./terminal-ws"
 
 @Module
 class CartModule extends VuexModule {
   items: Item[] = []
-  socket: SocketIOClient.Socket | any = undefined
 
   get totalAmount(): number {
     return this.items.map(it => {
-      return (it.count! * it.price) 
+      return (it.count! * it.price)
         + it.count! * (it.extras.map(e => e.price).reduce((a, b) => a + b, 0))
     }).reduce((a, b) => a + b, 0)
   }
@@ -23,7 +22,7 @@ class CartModule extends VuexModule {
 
   private itemsEqual(it1: Item, it2: Item): boolean {
     return it1._id === it2._id
-      && JSON.stringify(it1.extras.map(e => e._id).sort()) 
+      && JSON.stringify(it1.extras.map(e => e._id).sort())
       == JSON.stringify(it2.extras.map(e => e._id).sort())
   }
 
@@ -65,7 +64,7 @@ class CartModule extends VuexModule {
     } else {
       this.push(item)
     }
-    
+
     itemsModule.setCurrentItem(undefined)
     this.sendToTerminal()
   }
@@ -95,27 +94,10 @@ class CartModule extends VuexModule {
     this.sendToTerminal()
   }
 
-  @Mutation
-  setSocket(socket: SocketIOClient.Socket) {
-    this.socket = socket
-  }
-
-  @Action
-  registerSocket() {
-    const socket = socketio(process.env.VUE_APP_BACKEND_WS!)
-
-    socket.on('connect', () => {
-      socket.emit('register', {
-        role: 'cashier'
-      })
-    })
-
-    this.setSocket(socket)
-  }
-
   sendToTerminal() {
-    this.socket.emit('cart', this.items)
+    terminalWSModule.sendToTerminal("cart", this.items);
   }
+
 }
 
 export const cartModule = new CartModule({ store, name: "cart" })
