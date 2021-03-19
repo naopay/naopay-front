@@ -1,6 +1,5 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-class-modules"
 import store from "@/store"
-import { MessageBlock, TransactionBlock, TransactionInfo } from "@/models/transaction"
 import socketio from "socket.io-client"
 
 @Module
@@ -25,8 +24,8 @@ class TerminalWSModule extends VuexModule {
     this.setSocket(socket)
   }
 
-  @Action
-  sendToTerminal(event: string, ...args: any[]) {
+  sendToTerminal(event: string, args: any) {
+    console.log(this.socket)
     this.socket.emit(event, args)
   }
 

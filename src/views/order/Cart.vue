@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col gap-y-8 justify-between text-white">
-    <div
-      class="flex justify-between items-center h-20 bg-unselected rounded shadow"
-    >
-      <div class="ml-8 text-lg">1 ⋰⋅⋰ ≈ ${{ ticker.toFixed(2) }}</div>
+    <div class="flex justify-between items-center h-20 bg-unselected rounded shadow">
+      <div class="ml-8 text-lg">
+        1 ⋰⋅⋰ ≈ ${{ ticker.toFixed(3) }}
+      </div>
       <button @click="clearCart" class="w-20">
         <Icon name="clear" />
       </button>
@@ -26,12 +26,8 @@
       <div>Total</div>
       <div>${{ totalAmount.toFixed(2) }}</div>
     </div>
-    <TButton
-      v-if="items.length"
-      class="text-2xl h-20"
-      @click="startTransactionWS"
-    >
-      Checkout {{ totalNanoAmount.toFixed(2) }} ⋰⋅⋰
+    <TButton v-if="items.length" class="text-2xl h-20" @click="checkout">
+      Checkout {{ totalNanoAmount.toFixed(3) }} ⋰⋅⋰
     </TButton>
   </div>
 </template>
@@ -55,11 +51,13 @@ import { tools } from 'nanocurrency-web'
 })
 
 export default class Cart extends Vue {
-  startTransactionWS() {
+
+  checkout() {
     transactionModule.subscribeWebsocket({
       account: nanoModule.address,
       price: tools.convert(this.totalNanoAmount.toString(), 'NANO', 'RAW'),
-    });
+    })
+    cartModule.checkout()
   }
 
   deleteOne(item: Item) {

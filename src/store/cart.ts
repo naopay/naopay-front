@@ -4,6 +4,8 @@ import { Item } from "@/models/item"
 import { itemsModule } from "./items"
 import { tickerModule } from "./ticker"
 import { terminalWSModule } from "./terminal-ws"
+import { tools } from 'nanocurrency-web'
+import { nanoModule } from "./nano"
 
 @Module
 class CartModule extends VuexModule {
@@ -94,8 +96,22 @@ class CartModule extends VuexModule {
     this.sendToTerminal()
   }
 
-  sendToTerminal() {
-    terminalWSModule.sendToTerminal("cart", this.items);
+  @Action
+  checkout() {
+    this.sendToTerminal(true)
+  }
+
+  sendToTerminal(requestPayment = false) {
+    // Round up to 3 decimals
+    const nanoRawAmount = tools.convert(this.totalNanoAmount.toFixed(3), "NANO", "RAW")
+
+    terminalWSModule.sendToTerminal("cart", {
+      items: this.items,
+      amount: this.totalAmount,
+      nanoRawAmount: nanoRawAmount,
+      requestPayment: requestPayment,
+      posAddress: "nanoModule.address"
+    })
   }
 
 }
