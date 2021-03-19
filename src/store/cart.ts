@@ -110,7 +110,7 @@ class CartModule extends VuexModule {
       amount: this.totalAmount,
       nanoRawAmount: nanoRawAmount,
       requestPayment: requestPayment,
-      posAddress: "nanoModule.address"
+      posAddress: nanoModule.address
     })
   }
 
