@@ -2,16 +2,21 @@ import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
 import store from "@/store";
 import { Item } from "@/models/item";
 import { itemsModule } from "./items";
+import { tickerModule } from "./ticker";
 
 @Module
 class CartModule extends VuexModule {
   items: Item[] = []
 
-  get totalAmount() {
+  get totalAmount(): number {
     return this.items.map(it => {
       return (it.count! * it.price) 
         + it.count! * (it.extras.map(e => e.price).reduce((a, b) => a + b, 0))
     }).reduce((a, b) => a + b, 0)
+  }
+
+  get totalNanoAmount(): number {
+    return this.totalAmount * tickerModule.price
   }
 
   private itemsEqual(it1: Item, it2: Item): boolean {
@@ -20,8 +25,9 @@ class CartModule extends VuexModule {
       == JSON.stringify(it2.extras.map(e => e._id).sort())
   }
 
-  private copy(item: Item): Item {
-    return JSON.parse(JSON.stringify(item)) as Item
+  @Mutation
+  emptyItems() {
+    this.items = []
   }
 
   @Mutation
@@ -76,6 +82,11 @@ class CartModule extends VuexModule {
   @Action
   removeAllFromCart(item: Item) {
     this.remove(item)
+  }
+
+  @Action
+  clearCart() {
+    this.emptyItems()
   }
 }
 

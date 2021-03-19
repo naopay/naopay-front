@@ -8,13 +8,20 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import Nav from '@/components/Nav.vue'
+import { tickerModule } from './store/ticker';
 
 @Component({
   components: {
     Nav
   },
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+
+  created() {
+    tickerModule.subscribeWebsocket()
+  }
+  
+}
 </script>
 
 <style>
