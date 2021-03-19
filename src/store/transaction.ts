@@ -31,10 +31,13 @@ class TransactionModule extends VuexModule {
       const messageBlock = eData.message as MessageBlock
       const transactionBlock = messageBlock.block as TransactionBlock
       if (transactionBlock.subtype === "send") {
+        /*
         if (messageBlock.amount !== transaction.price) {
           // TODO Refund
+
           terminalWSModule.sendToTerminal("transaction", { accepted: false })
         }
+        */
         terminalWSModule.sendToTerminal("transaction", { accepted: true })
         const receiveBlock = await this.createBlockReceive(messageBlock);
         const result = await this.processBlock(receiveBlock, false);
