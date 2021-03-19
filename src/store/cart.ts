@@ -1,12 +1,14 @@
-import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
-import store from "@/store";
-import { Item } from "@/models/item";
-import { itemsModule } from "./items";
-import { tickerModule } from "./ticker";
+import { VuexModule, Module, Mutation, Action } from "vuex-class-modules"
+import store from "@/store"
+import { Item } from "@/models/item"
+import { itemsModule } from "./items"
+import { tickerModule } from "./ticker"
+import socketio from "socket.io-client"
 
 @Module
 class CartModule extends VuexModule {
   items: Item[] = []
+  socket: SocketIOClient.Socket | any = undefined
 
   get totalAmount(): number {
     return this.items.map(it => {
@@ -65,6 +67,7 @@ class CartModule extends VuexModule {
     }
     
     itemsModule.setCurrentItem(undefined)
+    this.sendToTerminal()
   }
 
   @Action
@@ -77,16 +80,41 @@ class CartModule extends VuexModule {
     } else {
       this.remove(item)
     }
+    this.sendToTerminal()
   }
 
   @Action
   removeAllFromCart(item: Item) {
     this.remove(item)
+    this.sendToTerminal()
   }
 
   @Action
   clearCart() {
     this.emptyItems()
+    this.sendToTerminal()
+  }
+
+  @Mutation
+  setSocket(socket: SocketIOClient.Socket) {
+    this.socket = socket
+  }
+
+  @Action
+  registerSocket() {
+    const socket = socketio(process.env.VUE_APP_BACKEND_WS!)
+
+    socket.on('connect', () => {
+      socket.emit('register', {
+        role: 'cashier'
+      })
+    })
+
+    this.setSocket(socket)
+  }
+
+  sendToTerminal() {
+    this.socket.emit('cart', this.items)
   }
 }
 

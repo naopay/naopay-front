@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Order from '@/views/order/Order.vue'
 import Transactions from '@/views/transactions/Transactions.vue'
-import Signup from '@/views/order/Order.vue'
+import Signup from '@/views/Signup.vue'
 
 Vue.use(VueRouter)
 
