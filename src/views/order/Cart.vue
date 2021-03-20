@@ -69,11 +69,11 @@ import LottieAnimation from "lottie-vuejs/src/LottieAnimation.vue"
 export default class Cart extends Vue {
 
   checkout() {
+    cartModule.checkout()
     transactionModule.subscribeWebsocket({
       account: nanoModule.address,
       price: tools.convert(this.totalNanoAmount.toFixed(3), 'NANO', 'RAW'),
     })
-    cartModule.checkout()
   }
 
   deleteOne(item: Item) {

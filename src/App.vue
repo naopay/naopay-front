@@ -10,6 +10,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import Nav from '@/components/Nav.vue'
 import { tickerModule } from './store/ticker';
 import { terminalWSModule } from './store/terminal-ws';
+import { nanoModule } from './store/nano';
 
 @Component({
   components: {
@@ -21,6 +22,10 @@ export default class App extends Vue {
   created() {
     tickerModule.subscribeWebsocket()
     terminalWSModule.registerSocket()
+
+    if (!nanoModule.connected) {
+      this.$router.push('/signup')
+    }
   }
   
 }

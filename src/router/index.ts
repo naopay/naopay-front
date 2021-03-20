@@ -9,7 +9,6 @@ Vue.use(VueRouter)
 const routes: Array<RouteConfig> = [
   {
     path: '/order',
-    alias: '/',
     name: 'Order',
     component: Order
   },
@@ -20,6 +19,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/signup',
+    alias: '/',
     name: 'Signup',
     component: Signup
   }

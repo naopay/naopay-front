@@ -24,7 +24,7 @@ import { cartModule } from "@/store/cart";
     CategoryCard,
   },
 })
-export default class Order extends Vue {
+export default class Categories extends Vue {
 
   created(): void {
     itemsModule.fetchCategories();

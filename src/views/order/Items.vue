@@ -25,7 +25,7 @@ import { cartModule } from "@/store/cart"
     ItemCard,
   },
 })
-export default class Order extends Vue {
+export default class Items extends Vue {
   
   onClick(item: Item): void {
     if (item.extras?.length) {

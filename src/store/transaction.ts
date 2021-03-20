@@ -13,6 +13,7 @@ import { Item } from "@/models/item"
 @Module
 class TransactionModule extends VuexModule {
 
+  transactionWs: WebSocket | any = undefined
   status: TransactionStatus = TransactionStatus.NONE
 
   get transactionIsAccepted(): boolean {
@@ -24,14 +25,28 @@ class TransactionModule extends VuexModule {
   }
 
   @Mutation
+  setTransactionWs(ws: WebSocket) {
+    this.transactionWs = ws
+  }
+
+  @Mutation
   setStatus(status: TransactionStatus) {
     this.status = status
   }
 
   @Action
+  cancelCurrentRequest() {
+    if (this.transactionWs) {
+      this.transactionWs?.close()
+    }
+    this.setStatus(TransactionStatus.NONE)
+  }
+
+  @Action
   subscribeWebsocket(transaction: TransactionInfo) {
-    if (this.status === TransactionStatus.PENDING) return;
+    if (this.status === TransactionStatus.PENDING) return
     this.setStatus(TransactionStatus.PENDING)
+
     const ws = new WebSocket(process.env.VUE_APP_WSS_URL!)
     ws.onopen = () => {
       ws.send(JSON.stringify({
@@ -46,6 +61,11 @@ class TransactionModule extends VuexModule {
     }
 
     ws.onmessage = async (e: any) => {
+      if (this.status === TransactionStatus.NONE) {
+        ws.close()
+        return
+      }
+
       const eData = JSON.parse(e.data)
       if (eData.ack) return
       const messageBlock = eData.message as MessageBlock
@@ -54,16 +74,17 @@ class TransactionModule extends VuexModule {
         if (messageBlock.amount !== transaction.price) {
           terminalWSModule.sendToTerminal("transaction", { accepted: false })
           
-          this.setStatus(TransactionStatus.ACCEPTED)
+          this.setStatus(TransactionStatus.REJECTED)
+          
           setTimeout(() => {
             this.setStatus(TransactionStatus.NONE)
-          }, 1000)
+            cartModule.sendToTerminal(false)
+          }, 2000)
 
           const receiveBlock = await this.createBlockReceive(messageBlock);
           await this.processBlock(receiveBlock, false)
           const sendBlock = await this.createBlockSend(messageBlock.amount, messageBlock.account)
           await this.processBlock(sendBlock, true)
-          ws.close();
           return;
         }
 
@@ -78,13 +99,15 @@ class TransactionModule extends VuexModule {
         setTimeout(() => {
           cartModule.clearCart()
           this.setStatus(TransactionStatus.NONE)
-        }, 1000)
+        }, 2000)
 
         const receiveBlock = await this.createBlockReceive(messageBlock)
         this.processBlock(receiveBlock, false)
         ws.close();
       }
     }
+
+    this.setTransactionWs(ws)
   }
 
   private async saveTransactionDB(items: Item[], total: string, totalNano: string, txid: string, sender: string, receiver: string) {

@@ -33,7 +33,7 @@ import { cartModule } from "@/store/cart";
     ItemCounter
   },
 })
-export default class Order extends Vue {
+export default class Extras extends Vue {
   private selectedExtras: Extra[] = []
   private itemCount = 1
 
