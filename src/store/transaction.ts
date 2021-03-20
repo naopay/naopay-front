@@ -30,6 +30,8 @@ class TransactionModule extends VuexModule {
 
   @Action
   subscribeWebsocket(transaction: TransactionInfo) {
+    if (this.status === TransactionStatus.PENDING) return;
+    this.setStatus(TransactionStatus.PENDING)
     const ws = new WebSocket(process.env.VUE_APP_WSS_URL!)
     ws.onopen = () => {
       ws.send(JSON.stringify({
@@ -49,8 +51,6 @@ class TransactionModule extends VuexModule {
       const messageBlock = eData.message as MessageBlock
       const transactionBlock = messageBlock.block as TransactionBlock
       if (transactionBlock.subtype === "send") {
-        console.log(messageBlock.amount)
-        console.log(transaction.price)
         if (messageBlock.amount !== transaction.price) {
           terminalWSModule.sendToTerminal("transaction", { accepted: false })
           
@@ -63,6 +63,7 @@ class TransactionModule extends VuexModule {
           await this.processBlock(receiveBlock, false)
           const sendBlock = await this.createBlockSend(messageBlock.amount, messageBlock.account)
           await this.processBlock(sendBlock, true)
+          ws.close();
           return;
         }
 
@@ -81,6 +82,7 @@ class TransactionModule extends VuexModule {
 
         const receiveBlock = await this.createBlockReceive(messageBlock)
         this.processBlock(receiveBlock, false)
+        ws.close();
       }
     }
   }

@@ -1,5 +1,6 @@
 export enum TransactionStatus {
   NONE,
   ACCEPTED,
-  REJECTED
+  REJECTED,
+  PENDING
 }
