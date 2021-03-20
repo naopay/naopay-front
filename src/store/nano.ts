@@ -13,7 +13,7 @@ class NanoModule extends VuexModule {
   username = "";
   connected = false;
   privateKey = ""
-  publicKey = ""
+  publicKey = localStorage.getItem("publickey")
   address = ""
 
   
@@ -49,6 +49,7 @@ class NanoModule extends VuexModule {
     }
 
   }
+
   @Mutation
   setAddress(address: string) {
     this.address = address;

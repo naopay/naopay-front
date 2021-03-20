@@ -55,7 +55,7 @@ export default class Cart extends Vue {
   checkout() {
     transactionModule.subscribeWebsocket({
       account: nanoModule.address,
-      price: tools.convert(this.totalNanoAmount.toString(), 'NANO', 'RAW'),
+      price: tools.convert(this.totalNanoAmount.toFixed(3), 'NANO', 'RAW'),
     })
     cartModule.checkout()
   }
