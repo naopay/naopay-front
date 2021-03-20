@@ -13,6 +13,7 @@ __.env__ settings
  <li><b>VUE_APP_BACK_URL</b>: nanopos-back URL</li>
  <li><b>VUE_APP_WSS_URL</b>: RPC Websocket</li>
 </ul>
+
 ### Compiles and hot-reloads for development
 ```
 npm run serve
