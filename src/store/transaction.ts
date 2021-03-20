@@ -14,6 +14,14 @@ class TransactionModule extends VuexModule {
 
   status: TransactionStatus = TransactionStatus.NONE
 
+  get transactionIsAccepted(): boolean {
+    return this.status === TransactionStatus.ACCEPTED
+  }
+
+  get transactionIsRejected(): boolean {
+    return this.status === TransactionStatus.REJECTED
+  }
+
   @Mutation
   setStatus(status: TransactionStatus) {
     this.status = status
@@ -22,7 +30,7 @@ class TransactionModule extends VuexModule {
   @Action
   subscribeWebsocket(transaction: TransactionInfo) {
     const ws = new WebSocket(process.env.VUE_APP_WSS_URL!)
-    ws.onopen = (e: any) => {
+    ws.onopen = () => {
       ws.send(JSON.stringify({
         action: "subscribe",
         topic: "confirmation",
@@ -66,7 +74,7 @@ class TransactionModule extends VuexModule {
   private async processBlock(block: SignedBlock, send: boolean) {
     const processB = {
       action: "process",
-      json_block: "true",
+      "json_block": "true",
       block: block,
       subtype: ""
     }

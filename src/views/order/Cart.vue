@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-y-8 justify-between text-white">
+  <div class="relative flex flex-col gap-y-8 justify-between text-white">
     <div class="flex justify-between items-center h-20 bg-unselected rounded shadow">
       <div class="ml-8 text-lg">
         1 ⋰⋅⋰ ≈ ${{ ticker.toFixed(3) }}
@@ -8,6 +8,20 @@
         <Icon name="clear" />
       </button>
     </div>
+
+    <transition name="pop">
+      <div v-if="transactionAccepted" class="absolute w-full h-full flex items-center justify-center">
+        <div class="w-56">
+          <LottieAnimation path="check_animation.json" :speed="2" :loop="false"/>
+        </div>
+      </div>
+      <div v-if="transactionRejected" class="absolute w-full h-full flex items-center justify-center">
+        <div class="w-56">
+          <LottieAnimation path="error_animation.json" :speed="1" :loop="false"/>
+        </div>
+      </div>
+    </transition>
+
     <ul
       class="flex-1 flex flex-col gap-8 w-full overflow-y-scroll scrollbar-hidden"
     >
@@ -42,11 +56,13 @@ import { tickerModule } from "@/store/ticker";
 import { transactionModule } from "@/store/transaction";
 import { nanoModule } from "@/store/nano";
 import { tools } from 'nanocurrency-web'
+import LottieAnimation from "lottie-vuejs/src/LottieAnimation.vue"
 
 @Component({
   components: {
     CartItem,
     Icon,
+    LottieAnimation
   },
 })
 
@@ -72,6 +88,14 @@ export default class Cart extends Vue {
     cartModule.clearCart();
   }
 
+  get transactionAccepted(): boolean {
+    return transactionModule.transactionIsAccepted
+  }
+
+  get transactionRejected(): boolean {
+    return transactionModule.transactionIsRejected
+  }
+
   get ticker(): number {
     return tickerModule.price;
   }
@@ -89,3 +113,14 @@ export default class Cart extends Vue {
   }
 }
 </script>
+
+<style scoped>
+.pop-enter-active, .pop-leave-active {
+  transition: all 200ms ease-in-out;
+}
+
+.pop-enter, .pop-leave-to {
+  transform: scale(0);
+  opacity: 0.5;
+}
+</style>
