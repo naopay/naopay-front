@@ -6,9 +6,18 @@ import { powClient, rpcClient } from "@/plugins/http"
 import { nanoModule } from "./nano"
 import { block } from 'nanocurrency-web'
 import { SignedBlock } from "nanocurrency-web/dist/lib/block-signer"
+import { cartModule } from "./cart"
+import { TransactionStatus } from "./transaction-status"
 
 @Module
 class TransactionModule extends VuexModule {
+
+  status: TransactionStatus = TransactionStatus.NONE
+
+  @Mutation
+  setStatus(status: TransactionStatus) {
+    this.status = status
+  }
 
   @Action
   subscribeWebsocket(transaction: TransactionInfo) {
@@ -27,7 +36,7 @@ class TransactionModule extends VuexModule {
 
     ws.onmessage = async (e: any) => {
       const eData = JSON.parse(e.data)
-      if (eData.ack) return;
+      if (eData.ack) return
       const messageBlock = eData.message as MessageBlock
       const transactionBlock = messageBlock.block as TransactionBlock
       if (transactionBlock.subtype === "send") {
@@ -39,20 +48,27 @@ class TransactionModule extends VuexModule {
         }
         */
         terminalWSModule.sendToTerminal("transaction", { accepted: true })
-        const receiveBlock = await this.createBlockReceive(messageBlock);
-        const result = await this.processBlock(receiveBlock, false);
+
+        this.setStatus(TransactionStatus.ACCEPTED)
+        setTimeout(() => {
+          cartModule.clearCart()
+          this.setStatus(TransactionStatus.NONE)
+        }, 1000)
+
+        const receiveBlock = await this.createBlockReceive(messageBlock)
+        this.processBlock(receiveBlock, false)
       }
     }
   }
 
 
 
-  private async processBlock(bloc: SignedBlock, send: boolean) {
+  private async processBlock(block: SignedBlock, send: boolean) {
     const processB = {
-      "action": "process",
-      "json_block": "true",
-      "block": bloc,
-      "subtype": ""
+      action: "process",
+      json_block: "true",
+      block: block,
+      subtype: ""
     }
     send ? processB.subtype = "send" : processB.subtype = "receive"
     const res = await rpcClient.post(`/`, processB);
@@ -62,9 +78,9 @@ class TransactionModule extends VuexModule {
 
   private async generateWork(hash: string) {
     const generateWorkReq = {
-      "action": "work_generate",
-      "hash": hash,
-      "difficulty": "ffffffc000000000"
+      action: "work_generate",
+      hash: hash,
+      difficulty: "ffffffc000000000"
     }
     const res = await powClient.post(`/`, generateWorkReq);
 
@@ -73,8 +89,8 @@ class TransactionModule extends VuexModule {
 
   private async getAccountKey(account: string) {
     const accountInfo = {
-      "action": "account_key",
-      "account": account
+      action: "account_key",
+      account: account
     }
     const res = await rpcClient.post(`/`, accountInfo)
     return res.data.key
@@ -82,8 +98,8 @@ class TransactionModule extends VuexModule {
 
   private async getWalletInfo(account: string) {
     const accountInfo = {
-      "action": "account_info",
-      "account": account
+      action: "account_info",
+      account: account
     }
     const res = await rpcClient.post(`/`, accountInfo)
     if (res.data.error) {
