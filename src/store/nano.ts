@@ -4,7 +4,6 @@ import AES from 'crypto-js/aes'
 import CryptoJS from 'crypto-js'
 import store from "@/store";
 import { WebAuthn } from "@/plugins/webauthn"
-import router from "@/router"
 import { wallet } from 'nanocurrency-web'
 
 @Module
@@ -80,7 +79,6 @@ class NanoModule extends VuexModule {
     if (privateKey) {
       this.setPrivateKey(privateKey)
       this.setConnected(true);
-      router.push('/order')
     } else {
       throw new Error("Login not working");
     }

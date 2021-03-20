@@ -13,9 +13,7 @@
 
         <div class="break-words text-center mt-4">{{ seed }}</div>
       </div>
-      <TButton v-if="!publicKey" @click.native="generateSeed"
-        >Create a Nano Wallet</TButton
-      >
+      <TButton v-if="!publicKey" @click.native="generateSeed">Create a Nano Wallet</TButton>
       <TButton v-if="publicKey" @click.native="login">Connect</TButton>
     </div>
   </div>
@@ -43,12 +41,15 @@ export default class Signup extends Vue {
     return nanoModule.connected;
   }
 
-  generateSeed() {
-    return nanoModule.generateSeed();
+  generateSeed(): void {
+    nanoModule.generateSeed()
   }
 
-  login() {
-    return nanoModule.login();
+  async login(): Promise<void> {
+    await nanoModule.login()
+    if (nanoModule.connected) {
+      this.$router.push({name: 'Order'})
+    }
   }
 }
 </script>
