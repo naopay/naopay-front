@@ -11,9 +11,10 @@
           <Icon name="check_circle" :outlined="false" />
         </div>
 
-        <div key="extra-name" class="text-3xl font-medium text-left">{{ extra.name }}</div>
+        <div key="extra-name" class="text-3xl font-medium text-left">
+          {{ extra.name }}
+        </div>
       </transition-group>
-      
     </div>
     <div class="text-xl text-gray-300">+ ${{ extra.price }}</div>
   </Card>
@@ -35,7 +36,7 @@ export default class ExtraCard extends Vue {
   @Prop()
   private extra!: Extra;
 
-  @Prop({default: false})
+  @Prop({ default: false })
   private selected!: boolean;
 
   get color() {
@@ -51,7 +52,8 @@ export default class ExtraCard extends Vue {
 .slide-fade-leave-active {
   transition: all 200ms ease;
 }
-.slide-fade-enter, .slide-fade-leave-to {
+.slide-fade-enter,
+.slide-fade-leave-to {
   transform: translateY(10px);
   opacity: 0;
 }

@@ -13,10 +13,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator"
-import CategoryCard from "@/components/CategoryCard.vue"
-import { itemsModule } from "@/store/items"
-import { Category } from "@/models/category"
+import { Component, Vue } from "vue-property-decorator";
+import CategoryCard from "@/components/CategoryCard.vue";
+import { itemsModule } from "@/store/items";
+import { Category } from "@/models/category";
 import { cartModule } from "@/store/cart";
 
 @Component({
@@ -25,7 +25,6 @@ import { cartModule } from "@/store/cart";
   },
 })
 export default class Categories extends Vue {
-
   created(): void {
     itemsModule.fetchCategories();
   }
@@ -35,13 +34,14 @@ export default class Categories extends Vue {
   }
 
   countItems(categoryId: string) {
-    return cartModule.items.filter(it => it.category === categoryId)
-      .map(it => it.count || 0).reduce((a, b) => a + b, 0)
+    return cartModule.items
+      .filter((it) => it.category === categoryId)
+      .map((it) => it.count || 0)
+      .reduce((a, b) => a + b, 0);
   }
 
   get categories(): Category[] {
     return itemsModule.categories;
   }
-
 }
 </script>

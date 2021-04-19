@@ -73,9 +73,9 @@ class TransactionModule extends VuexModule {
       if (transactionBlock.subtype === "send") {
         if (messageBlock.amount !== transaction.price) {
           terminalWSModule.sendToTerminal("transaction", { accepted: false })
-          
+
           this.setStatus(TransactionStatus.REJECTED)
-          
+
           setTimeout(() => {
             this.setStatus(TransactionStatus.NONE)
             cartModule.sendToTerminal(false)
@@ -93,8 +93,8 @@ class TransactionModule extends VuexModule {
         const items = [...cartModule.items]
         const totalAmount = cartModule.totalAmount.toString()
         const totalNano = cartModule.totalNanoAmount.toFixed(3)
-        this.saveTransactionDB(items,totalAmount, totalNano, messageBlock.hash, messageBlock.account, nanoModule.address)
-        
+        this.saveTransactionDB(items, totalAmount, totalNano, messageBlock.hash, messageBlock.account, nanoModule.address)
+
         this.setStatus(TransactionStatus.ACCEPTED)
         setTimeout(() => {
           cartModule.clearCart()
@@ -129,7 +129,7 @@ class TransactionModule extends VuexModule {
       }
     }
     console.log(transaction);
-    
+
     const res = await http.post(`/transactions`, transaction);
     return res.data;
   }

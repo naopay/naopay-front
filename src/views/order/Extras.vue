@@ -12,8 +12,10 @@
       />
     </div>
     <div class="flex gap-4">
-      <ItemCounter @change="itemCount = $event"/>
-      <TButton @click.native="addToCart" class="flex-1 text-2xl h-20">Add to cart</TButton>
+      <ItemCounter @change="itemCount = $event" />
+      <TButton @click.native="addToCart" class="flex-1 text-2xl h-20"
+        >Add to cart</TButton
+      >
     </div>
   </div>
 </template>
@@ -30,38 +32,40 @@ import { cartModule } from "@/store/cart";
 @Component({
   components: {
     ExtraCard,
-    ItemCounter
+    ItemCounter,
   },
 })
 export default class Extras extends Vue {
-  private selectedExtras: Extra[] = []
-  private itemCount = 1
+  private selectedExtras: Extra[] = [];
+  private itemCount = 1;
 
   isSelected(extra: Extra): boolean {
-    return this.selectedExtras.some(e => e._id === extra._id)
+    return this.selectedExtras.some((e) => e._id === extra._id);
   }
 
   select(extra: Extra): void {
-    const existingIndex = this.selectedExtras.findIndex(e => e._id === extra._id)
+    const existingIndex = this.selectedExtras.findIndex(
+      (e) => e._id === extra._id
+    );
     if (existingIndex == -1) {
-      this.selectedExtras.push(extra)
+      this.selectedExtras.push(extra);
     } else {
-      this.selectedExtras.splice(existingIndex, 1)
+      this.selectedExtras.splice(existingIndex, 1);
     }
   }
 
   addToCart(): void {
     cartModule.addToCart(
       Item.copy(this.item, this.itemCount, this.selectedExtras)
-    )
+    );
   }
 
   get item(): Item {
-    return itemsModule.currentItem!
+    return itemsModule.currentItem!;
   }
 
   get extras(): Extra[] {
-    return itemsModule.currentExtras
+    return itemsModule.currentExtras;
   }
 }
 </script>

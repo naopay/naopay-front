@@ -1,13 +1,14 @@
 <template>
-  <router-link :to="to"
+  <router-link
+    :to="to"
     :class="[
-        'flex justify-center items-center rounded w-12 h-12 transition-colors duration-200',
-        $route.path === to ? 
-        'bg-dark text-blue-300' :
-        'bg-transparent text-gray-400'
+      'flex justify-center items-center rounded w-12 h-12 transition-colors duration-200',
+      $route.path === to
+        ? 'bg-dark text-blue-300'
+        : 'bg-transparent text-gray-400',
     ]"
   >
-    <Icon :name="icon" :outlined="true" class="text-4xl"/>
+    <Icon :name="icon" :outlined="true" class="text-4xl" />
   </router-link>
 </template>
 
@@ -21,12 +22,10 @@ import Icon from "@/components/Icon.vue";
   },
 })
 export default class NavButton extends Vue {
+  @Prop()
+  private to!: string;
 
-    @Prop()
-    private to!: string;
-
-    @Prop()
-    private icon!: string;
-
+  @Prop()
+  private icon!: string;
 }
 </script>

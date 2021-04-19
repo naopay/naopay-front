@@ -1,6 +1,10 @@
 <template>
   <transition-group class="flex items-center h-16 gap-x-8" name="slide-fade">
-    <div @click="onItemClick" key="details" class="flex-grow transition-all duration-200">
+    <div
+      @click="onItemClick"
+      key="details"
+      class="flex-grow transition-all duration-200"
+    >
       <div class="flex font-medium text-xl">
         <div class="w-14">x{{ item.count }}</div>
         <div class="flex-1 flex justify-between">
@@ -45,9 +49,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator"
-import Icon from "@/components/Icon.vue"
-import { Item } from "@/models/item"
+import { Component, Prop, Vue } from "vue-property-decorator";
+import Icon from "@/components/Icon.vue";
+import { Item } from "@/models/item";
 
 @Component({
   components: {
@@ -56,20 +60,20 @@ import { Item } from "@/models/item"
 })
 export default class CartItem extends Vue {
   @Prop()
-  private item!: Item
+  private item!: Item;
 
-  private revealButtons = false
+  private revealButtons = false;
 
   private onItemClick(): void {
-    this.revealButtons = !this.revealButtons
+    this.revealButtons = !this.revealButtons;
   }
 
   private onDeleteAllClick(): void {
-    this.$emit("deleteAll")
+    this.$emit("deleteAll");
   }
 
   private onDeleteOneClick(): void {
-    this.$emit("deleteOne")
+    this.$emit("deleteOne");
   }
 }
 </script>
@@ -81,7 +85,8 @@ export default class CartItem extends Vue {
 .slide-fade-leave-active {
   transition: all 200ms ease;
 }
-.slide-fade-enter, .slide-fade-leave-to {
+.slide-fade-enter,
+.slide-fade-leave-to {
   transform: translateX(10px);
   opacity: 0;
 }

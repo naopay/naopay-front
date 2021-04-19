@@ -5,16 +5,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
 export default class Icon extends Vue {
-  
   @Prop()
-  private name!: string
+  private name!: string;
 
-  @Prop({default: false})
-  private outlined!: boolean
-
+  @Prop({ default: false })
+  private outlined!: boolean;
 }
 </script>

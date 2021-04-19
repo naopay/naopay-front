@@ -6,40 +6,25 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import Nav from '@/components/Nav.vue'
-import { tickerModule } from './store/ticker';
-import { terminalWSModule } from './store/terminal-ws';
-import { nanoModule } from './store/nano';
+import { Component, Vue } from "vue-property-decorator";
+import Nav from "@/components/Nav.vue";
+import { tickerModule } from "./store/ticker";
+import { terminalWSModule } from "./store/terminal-ws";
+import { nanoModule } from "./store/nano";
 
 @Component({
   components: {
-    Nav
+    Nav,
   },
 })
 export default class App extends Vue {
-
   created() {
-    tickerModule.subscribeWebsocket()
-    terminalWSModule.registerSocket()
+    tickerModule.subscribeWebsocket();
+    terminalWSModule.registerSocket();
 
     if (!nanoModule.connected) {
-      this.$router.push('/signup')
+      this.$router.push("/signup");
     }
   }
-  
 }
 </script>
-
-<style>
-html,
-body {
-  font-family: "Jost", sans-serif;
-}
-
-#app {
-  font-family: "Jost", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-</style>

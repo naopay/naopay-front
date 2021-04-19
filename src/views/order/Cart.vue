@@ -1,23 +1,37 @@
 <template>
   <div class="relative flex flex-col gap-y-8 justify-between text-white">
-    <div class="flex justify-between items-center h-20 bg-unselected rounded shadow">
-      <div class="ml-8 text-lg">
-        1 ⋰⋅⋰ ≈ ${{ ticker.toFixed(3) }}
-      </div>
+    <div
+      class="flex justify-between items-center h-20 bg-unselected rounded shadow"
+    >
+      <div class="ml-8 text-lg">1 ⋰⋅⋰ ≈ ${{ ticker.toFixed(3) }}</div>
       <button @click="clearCart" class="w-20">
         <Icon name="clear" />
       </button>
     </div>
 
     <transition name="pop">
-      <div v-if="transactionAccepted" class="absolute w-full h-full flex items-center justify-center">
+      <div
+        v-if="transactionAccepted"
+        class="absolute w-full h-full flex items-center justify-center"
+      >
         <div class="w-56">
-          <LottieAnimation path="check_animation.json" :speed="2" :loop="false"/>
+          <LottieAnimation
+            path="check_animation.json"
+            :speed="2"
+            :loop="false"
+          />
         </div>
       </div>
-      <div v-if="transactionRejected" class="absolute w-full h-full flex items-center justify-center">
+      <div
+        v-if="transactionRejected"
+        class="absolute w-full h-full flex items-center justify-center"
+      >
         <div class="w-56">
-          <LottieAnimation path="error_animation.json" :speed="1" :loop="false"/>
+          <LottieAnimation
+            path="error_animation.json"
+            :speed="1"
+            :loop="false"
+          />
         </div>
       </div>
     </transition>
@@ -55,25 +69,23 @@ import Icon from "@/components/Icon.vue";
 import { tickerModule } from "@/store/ticker";
 import { transactionModule } from "@/store/transaction";
 import { nanoModule } from "@/store/nano";
-import { tools } from 'nanocurrency-web'
-import LottieAnimation from "lottie-vuejs/src/LottieAnimation.vue"
+import { tools } from "nanocurrency-web";
+import LottieAnimation from "lottie-vuejs/src/LottieAnimation.vue";
 
 @Component({
   components: {
     CartItem,
     Icon,
-    LottieAnimation
+    LottieAnimation,
   },
 })
-
 export default class Cart extends Vue {
-
   checkout() {
-    cartModule.checkout()
+    cartModule.checkout();
     transactionModule.subscribeWebsocket({
       account: nanoModule.address,
-      price: tools.convert(this.totalNanoAmount.toFixed(3), 'NANO', 'RAW'),
-    })
+      price: tools.convert(this.totalNanoAmount.toFixed(3), "NANO", "RAW"),
+    });
   }
 
   deleteOne(item: Item) {
@@ -89,11 +101,11 @@ export default class Cart extends Vue {
   }
 
   get transactionAccepted(): boolean {
-    return transactionModule.transactionIsAccepted
+    return transactionModule.transactionIsAccepted;
   }
 
   get transactionRejected(): boolean {
-    return transactionModule.transactionIsRejected
+    return transactionModule.transactionIsRejected;
   }
 
   get ticker(): number {
@@ -115,11 +127,13 @@ export default class Cart extends Vue {
 </script>
 
 <style scoped>
-.pop-enter-active, .pop-leave-active {
+.pop-enter-active,
+.pop-leave-active {
   transition: all 200ms ease-in-out;
 }
 
-.pop-enter, .pop-leave-to {
+.pop-enter,
+.pop-leave-to {
   transform: scale(0);
   opacity: 0.5;
 }

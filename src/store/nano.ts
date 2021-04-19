@@ -15,19 +15,17 @@ class NanoModule extends VuexModule {
   publicKey = localStorage.getItem("publickey")
   address = ""
 
-  
-
   @Action
   async generateSeed() {
     const w = wallet.generate();
     const seed = w.seed;
-    
+
     const privateKey = w.accounts[0].privateKey;
     const publicKey = w.accounts[0].publicKey;
     const address = w.accounts[0].address;
     const safeArray = CryptoJS.enc.Hex.stringify(CryptoJS.lib.WordArray.random(32))
-    localStorage.setItem('publickey',publicKey);
-    localStorage.setItem('address',address);
+    localStorage.setItem('publickey', publicKey);
+    localStorage.setItem('address', address);
     this.setSeed(seed)
     this.setPublicKey(publicKey)
     this.setUsername(publicKey);

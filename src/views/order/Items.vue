@@ -14,11 +14,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator"
-import ItemCard from "@/components/ItemCard.vue"
-import { itemsModule } from "@/store/items"
-import { Item } from "@/models/item"
-import { cartModule } from "@/store/cart"
+import { Component, Vue } from "vue-property-decorator";
+import ItemCard from "@/components/ItemCard.vue";
+import { itemsModule } from "@/store/items";
+import { Item } from "@/models/item";
+import { cartModule } from "@/store/cart";
 
 @Component({
   components: {
@@ -26,22 +26,23 @@ import { cartModule } from "@/store/cart"
   },
 })
 export default class Items extends Vue {
-  
   onClick(item: Item): void {
     if (item.extras?.length) {
-      itemsModule.selectItem(item._id)
+      itemsModule.selectItem(item._id);
     } else {
-      cartModule.addToCart(Item.copy(item, 1))
+      cartModule.addToCart(Item.copy(item, 1));
     }
   }
 
   getCartCount(itemId: string): number {
-    return cartModule.items.filter(it => it._id === itemId)
-      .map(it => it.count || 0).reduce((a, b) => a + b, 0)
+    return cartModule.items
+      .filter((it) => it._id === itemId)
+      .map((it) => it.count || 0)
+      .reduce((a, b) => a + b, 0);
   }
 
   isInCart(itemId: string): boolean {
-    return cartModule.items.some(it => it._id === itemId)
+    return cartModule.items.some((it) => it._id === itemId);
   }
 
   get items(): Item[] {

@@ -11,7 +11,7 @@ export class Item {
     public category: string, // category id
     public count: number = 1,
     public extras: Extra[] = []
-  ) {}
+  ) { }
 
   public static copy(other: Item, count: number, extras: Extra[] = []): Item {
     return new Item(
@@ -22,7 +22,7 @@ export class Item {
       other.available,
       other.category,
       count,
-      [ ...extras ]
+      [...extras]
     )
   }
 }
