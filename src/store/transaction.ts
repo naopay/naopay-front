@@ -7,47 +7,47 @@ import { nanoModule } from "./nano"
 import { block } from 'nanocurrency-web'
 import { SignedBlock } from "nanocurrency-web/dist/lib/block-signer"
 import { cartModule } from "./cart"
-import { TransactionStatus } from "./transaction-status"
+import { PaymentStatus } from "../models/payment-status"
 import { Item } from "@/models/item"
 
 @Module
 class TransactionModule extends VuexModule {
 
-  transactionWs: WebSocket | any = undefined
-  status: TransactionStatus = TransactionStatus.NONE
+  transactionWs: WebSocket | any = undefined;
+  status: PaymentStatus = PaymentStatus.NONE;
 
   get transactionIsAccepted(): boolean {
-    return this.status === TransactionStatus.ACCEPTED
+    return this.status === PaymentStatus.ACCEPTED;
   }
 
   get transactionIsRejected(): boolean {
-    return this.status === TransactionStatus.REJECTED
+    return this.status === PaymentStatus.REJECTED;
   }
 
   @Mutation
   setTransactionWs(ws: WebSocket) {
-    this.transactionWs = ws
+    this.transactionWs = ws;
   }
 
   @Mutation
-  setStatus(status: TransactionStatus) {
-    this.status = status
+  setStatus(status: PaymentStatus) {
+    this.status = status;
   }
 
   @Action
   cancelCurrentRequest() {
     if (this.transactionWs) {
-      this.transactionWs?.close()
+      this.transactionWs?.close();
     }
-    this.setStatus(TransactionStatus.NONE)
+    this.setStatus(PaymentStatus.NONE);
   }
 
   @Action
   subscribeWebsocket(transaction: TransactionInfo) {
-    if (this.status === TransactionStatus.PENDING) return
-    this.setStatus(TransactionStatus.PENDING)
+    if (this.status === PaymentStatus.PENDING) return;
+    this.setStatus(PaymentStatus.PENDING);
 
-    const ws = new WebSocket(process.env.VUE_APP_WSS_URL!)
+    const ws = new WebSocket(process.env.VUE_APP_WSS_URL!);
     ws.onopen = () => {
       ws.send(JSON.stringify({
         action: "subscribe",
@@ -57,57 +57,57 @@ class TransactionModule extends VuexModule {
             transaction.account
           ]
         }
-      }))
-    }
+      }));
+    };
 
     ws.onmessage = async (e: any) => {
-      if (this.status === TransactionStatus.NONE) {
-        ws.close()
-        return
+      if (this.status === PaymentStatus.NONE) {
+        ws.close();
+        return;
       }
 
-      const eData = JSON.parse(e.data)
-      if (eData.ack) return
-      const messageBlock = eData.message as MessageBlock
-      const transactionBlock = messageBlock.block as TransactionBlock
+      const eData = JSON.parse(e.data);
+      if (eData.ack) return;
+      const messageBlock = eData.message as MessageBlock;
+      const transactionBlock = messageBlock.block as TransactionBlock;
       if (transactionBlock.subtype === "send") {
         if (messageBlock.amount !== transaction.price) {
-          terminalWSModule.sendToTerminal("transaction", { accepted: false })
+          terminalWSModule.sendToTerminal("transaction", { accepted: false });
 
-          this.setStatus(TransactionStatus.REJECTED)
+          this.setStatus(PaymentStatus.REJECTED);
 
           setTimeout(() => {
-            this.setStatus(TransactionStatus.NONE)
-            cartModule.sendToTerminal(false)
-          }, 2000)
+            this.setStatus(PaymentStatus.NONE);
+            cartModule.sendToTerminal(false);
+          }, 2000);
 
           const receiveBlock = await this.createBlockReceive(messageBlock);
-          await this.processBlock(receiveBlock, false)
-          const sendBlock = await this.createBlockSend(messageBlock.amount, messageBlock.account)
-          await this.processBlock(sendBlock, true)
+          await this.processBlock(receiveBlock, false);
+          const sendBlock = await this.createBlockSend(messageBlock.amount, messageBlock.account);
+          await this.processBlock(sendBlock, true);
           return;
         }
 
-        terminalWSModule.sendToTerminal("transaction", { accepted: true })
+        terminalWSModule.sendToTerminal("transaction", { accepted: true });
 
-        const items = [...cartModule.items]
-        const totalAmount = cartModule.totalAmount.toString()
-        const totalNano = cartModule.totalNanoAmount.toFixed(3)
-        this.saveTransactionDB(items, totalAmount, totalNano, messageBlock.hash, messageBlock.account, nanoModule.address)
+        const items = [...cartModule.items];
+        const totalAmount = cartModule.totalAmount.toString();
+        const totalNano = cartModule.totalNanoAmount.toFixed(3);
+        this.saveTransactionDB(items, totalAmount, totalNano, messageBlock.hash, messageBlock.account, nanoModule.address);
 
-        this.setStatus(TransactionStatus.ACCEPTED)
+        this.setStatus(PaymentStatus.ACCEPTED);
         setTimeout(() => {
-          cartModule.clearCart()
-          this.setStatus(TransactionStatus.NONE)
-        }, 2000)
+          cartModule.clearCart();
+          this.setStatus(PaymentStatus.NONE);
+        }, 2000);
 
-        const receiveBlock = await this.createBlockReceive(messageBlock)
-        this.processBlock(receiveBlock, false)
+        const receiveBlock = await this.createBlockReceive(messageBlock);
+        this.processBlock(receiveBlock, false);
         ws.close();
       }
     }
 
-    this.setTransactionWs(ws)
+    this.setTransactionWs(ws);
   }
 
   private async saveTransactionDB(items: Item[], total: string, totalNano: string, txid: string, sender: string, receiver: string) {
@@ -116,8 +116,9 @@ class TransactionModule extends VuexModule {
         product: item._id,
         quantity: item.count,
         extras: item.extras.map((extra) => extra._id)
-      }
-    })
+      };
+    });
+
     const transaction = {
       products,
       sender,
@@ -127,8 +128,7 @@ class TransactionModule extends VuexModule {
         fiat: total,
         nano: totalNano
       }
-    }
-    console.log(transaction);
+    };
 
     const res = await http.post(`/transactions`, transaction);
     return res.data;
@@ -137,69 +137,68 @@ class TransactionModule extends VuexModule {
 
 
   private async processBlock(block: SignedBlock, send: boolean) {
-    const processB = {
+    const processQuery = {
       action: "process",
-      "json_block": "true",
+      json_block: "true",
       block: block,
-      subtype: ""
-    }
-    send ? processB.subtype = "send" : processB.subtype = "receive"
-    const res = await rpcClient.post(`/`, processB);
+      subtype: send ? "send" : "receive"
+    };
 
-    return res.data.hash
+    const res = await rpcClient.post(`/`, processQuery);
+    return res.data.hash;
   }
 
   private async generateWork(hash: string) {
-    const difficulty = await powClient.post(`/`, { action: "active_difficulty" })
+    const difficulty = await powClient.post(`/`, { action: "active_difficulty" });
 
     const generateWorkReq = {
       action: "work_generate",
       hash: hash,
       difficulty: difficulty.data.network_current
-    }
+    };
     const res = await powClient.post(`/`, generateWorkReq);
 
-    return res.data.work
+    return res.data.work;
   }
 
   private async getAccountKey(account: string) {
     const accountInfo = {
       action: "account_key",
       account: account
-    }
-    const res = await rpcClient.post(`/`, accountInfo)
-    return res.data.key
+    };
+    const res = await rpcClient.post(`/`, accountInfo);
+    return res.data.key;
   }
 
   private async getWalletInfo(account: string) {
     const accountInfo = {
       action: "account_info",
       account: account
-    }
+    };
     const res = await rpcClient.post(`/`, accountInfo)
     if (res.data.error) {
       return {
         frontier: "0".repeat(64),
         balance: "0"
-      }
+      };
     }
 
     return {
       frontier: res.data.frontier,
       balance: res.data.balance,
-    }
+    };
   }
 
   private async createBlockReceive(message: MessageBlock) {
     const walletPK = nanoModule.privateKey;
-    const walletInfo = await this.getWalletInfo(message.block.link_as_account)
+    const walletInfo = await this.getWalletInfo(message.block.link_as_account);
     let hash;
     if (walletInfo.frontier === "0".repeat(64)) {
-      hash = await this.getAccountKey(nanoModule.address)
+      hash = await this.getAccountKey(nanoModule.address);
     } else {
-      hash = walletInfo.frontier
+      hash = walletInfo.frontier;
     }
-    const work = await this.generateWork(hash)
+    const work = await this.generateWork(hash);
     return block.receive({
       walletBalanceRaw: walletInfo.balance,
       amountRaw: message.amount,
@@ -213,9 +212,9 @@ class TransactionModule extends VuexModule {
 
   private async createBlockSend(amountRaw: string, toAddress: string) {
     const walletPK = nanoModule.privateKey;
-    const walletInfo = await this.getWalletInfo(nanoModule.address)
+    const walletInfo = await this.getWalletInfo(nanoModule.address);
     const hash = walletInfo.frontier;
-    const work = await this.generateWork(hash)
+    const work = await this.generateWork(hash);
     return block.send({
       walletBalanceRaw: walletInfo.balance,
       amountRaw,
@@ -227,7 +226,6 @@ class TransactionModule extends VuexModule {
     }, walletPK);
   }
 
-
 }
 
-export const transactionModule = new TransactionModule({ store, name: "transaction" })
+export const transactionModule = new TransactionModule({ store, name: "transaction" });

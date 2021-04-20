@@ -3,16 +3,16 @@ import store from "@/store"
 
 @Module
 class TickerModule extends VuexModule {
-  price = 0
+  price = 0;
 
   @Mutation
   updatePrice(price: number) {
-    this.price = price
+    this.price = price;
   }
 
   @Action
   subscribeWebsocket() {
-    const ws = new WebSocket('wss://ws.kraken.com')
+    const ws = new WebSocket('wss://ws.kraken.com');
     ws.onopen = (e: any) => {
       ws.send(JSON.stringify({
         event: "subscribe",
@@ -22,18 +22,18 @@ class TickerModule extends VuexModule {
         subscription: {
           name: "ticker"
         }
-      }))
-    }
+      }));
+    };
 
     ws.onmessage = (e: any) => {
-      const data = JSON.parse(e.data)
+      const data = JSON.parse(e.data);
       if (Array.isArray(data)) {
-        const price = data[1].c[0]
+        const price = data[1].c[0];
         if (price != undefined) {
-          this.updatePrice(Number(price))
+          this.updatePrice(Number(price));
         }
       }
-    }
+    };
   }
 
 }

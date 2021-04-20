@@ -10,9 +10,9 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 @Component
 export default class Icon extends Vue {
   @Prop()
-  private name!: string;
+  name!: string;
 
   @Prop({ default: false })
-  private outlined!: boolean;
+  outlined!: boolean;
 }
 </script>

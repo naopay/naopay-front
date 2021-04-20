@@ -60,19 +60,19 @@ import { Item } from "@/models/item";
 })
 export default class CartItem extends Vue {
   @Prop()
-  private item!: Item;
+  item!: Item;
 
-  private revealButtons = false;
+  revealButtons = false;
 
-  private onItemClick(): void {
+  onItemClick(): void {
     this.revealButtons = !this.revealButtons;
   }
 
-  private onDeleteAllClick(): void {
+  onDeleteAllClick(): void {
     this.$emit("deleteAll");
   }
 
-  private onDeleteOneClick(): void {
+  onDeleteOneClick(): void {
     this.$emit("deleteOne");
   }
 }

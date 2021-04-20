@@ -18,15 +18,15 @@ import Card from "./Card.vue";
 })
 export default class ItemCard extends Vue {
   @Prop()
-  private item!: Item;
+  item!: Item;
 
   @Prop({ default: 0 })
-  private count!: number;
+  count!: number;
 
   @Prop({ default: false })
-  private selected!: boolean;
+  selected!: boolean;
 
-  get color() {
+  get color(): string {
     return this.selected ? "selected" : "unselected";
   }
 }

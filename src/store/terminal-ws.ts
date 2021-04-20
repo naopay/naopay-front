@@ -4,11 +4,11 @@ import socketio from "socket.io-client"
 
 @Module
 class TerminalWSModule extends VuexModule {
-  socket: SocketIOClient.Socket | any = undefined
+  socket: SocketIOClient.Socket | any = undefined;
 
   @Mutation
   setSocket(socket: SocketIOClient.Socket) {
-    this.socket = socket
+    this.socket = socket;
   }
 
   @Action
@@ -18,15 +18,14 @@ class TerminalWSModule extends VuexModule {
     socket.on('connect', () => {
       socket.emit('register', {
         role: 'cashier'
-      })
-    })
+      });
+    });
 
-    this.setSocket(socket)
+    this.setSocket(socket);
   }
 
   sendToTerminal(event: string, args: any) {
-    console.log(this.socket)
-    this.socket.emit(event, args)
+    this.socket.emit(event, args);
   }
 
 

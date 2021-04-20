@@ -11,9 +11,9 @@ class NanoModule extends VuexModule {
   seed = "";
   username = "";
   connected = false;
-  privateKey = ""
-  publicKey = localStorage.getItem("publickey")
-  address = ""
+  privateKey = "";
+  publicKey = localStorage.getItem("publickey");
+  address = "";
 
   @Action
   async generateSeed() {
@@ -44,7 +44,6 @@ class NanoModule extends VuexModule {
     } else {
       throw new Error("Sign In KO")
     }
-
   }
 
   @Mutation
@@ -97,29 +96,6 @@ class NanoModule extends VuexModule {
   setUsername(username: string) {
     this.username = username;
   }
-
-  /*
-    async generateWallet(): Promise<Wallet> {
-
-
-
-
-        this.wallet = {
-            privateKey: privateKey,
-            publicKey: publicKey,
-            address: address
-        }
-
-        console.log(this.wallet);
-
-        this.balance.next("0");
-
-        this.registerSocket();
-
-        return this.wallet;
-    }
-    */
-
 }
 
 export const nanoModule = new NanoModule({ store, name: "nano" });

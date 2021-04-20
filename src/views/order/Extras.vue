@@ -13,9 +13,9 @@
     </div>
     <div class="flex gap-4">
       <ItemCounter @change="itemCount = $event" />
-      <TButton @click.native="addToCart" class="flex-1 text-2xl h-20"
-        >Add to cart</TButton
-      >
+      <Button @click.native="addToCart" class="flex-1 text-2xl h-20">
+        Add to cart
+      </Button>
     </div>
   </div>
 </template>

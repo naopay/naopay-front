@@ -18,7 +18,7 @@ import Card from "./Card.vue";
   },
 })
 export default class CategoryCard extends Vue {
-  private static readonly COLORS = [
+  static readonly COLORS = [
     "blue-400",
     "green-600",
     "yellow-500",
@@ -28,12 +28,12 @@ export default class CategoryCard extends Vue {
   ];
 
   @Prop()
-  private category!: Category;
+  category!: Category;
 
   @Prop({ default: 0 })
-  private itemCount!: number;
+  itemCount!: number;
 
-  get bgColor() {
+  get bgColor(): string {
     return CategoryCard.COLORS[this.category.color ?? 0];
   }
 }

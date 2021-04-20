@@ -15,6 +15,6 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 @Component
 export default class CounterButton extends Vue {
   @Prop({ default: false })
-  private disabled!: boolean;
+  disabled!: boolean;
 }
 </script>

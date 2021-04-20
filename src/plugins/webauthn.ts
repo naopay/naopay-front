@@ -32,7 +32,7 @@ const publicKeyCredentialToJSON = (pubKeyCred: any): any => {
   }
 
   return pubKeyCred;
-}
+};
 
 const preformatGetAssertReq = (getAssert: any) => {
   getAssert.challenge = base64url.toBuffer(getAssert.challenge);
@@ -41,7 +41,7 @@ const preformatGetAssertReq = (getAssert: any) => {
   }
 
   return getAssert;
-}
+};
 
 const sendCredentialResponse = async (credential: PublicKeyCredential, username: string) => {
   const responseWeb = publicKeyCredentialToJSON(credential)
@@ -52,9 +52,9 @@ const sendCredentialResponse = async (credential: PublicKeyCredential, username:
   }
   console.error(res.data);
   throw new Error("Credentials rejected");
-}
+};
 
-const registerWebAuthn = async (username: string, cipher: string) => {
+const registerWebAuthn = async (username: string, cipher: string): Promise<boolean> => {
   const res = await http.post(`/webauthn/register`, { username: username, cipher: cipher })
   if (res.status === 201) {
     res.data.challenge = base64url.toBuffer(res.data.challenge)
@@ -68,9 +68,9 @@ const registerWebAuthn = async (username: string, cipher: string) => {
   } else {
     throw new Error("Not Working")
   }
-}
+};
 
-const loginWebAuthn = async (username: string) => {
+const loginWebAuthn = async (username: string): Promise<string | undefined> => {
   if (username === "") throw new Error("Username Not Set")
   const res = await http.post(`/webauthn/login`, { username: username })
   if (res.status == 200) {
@@ -87,11 +87,10 @@ const loginWebAuthn = async (username: string) => {
       return AES.decrypt(serveResp, aesKey).toString(CryptoJS.enc.Utf8);
     }
   }
-  return false;
-}
+};
 
 
 export const WebAuthn = {
   registerWebAuthn,
   loginWebAuthn
-}
+};

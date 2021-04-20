@@ -23,9 +23,9 @@ import Icon from "@/components/Icon.vue";
 })
 export default class NavButton extends Vue {
   @Prop()
-  private to!: string;
+  to!: string;
 
   @Prop()
-  private icon!: string;
+  icon!: string;
 }
 </script>

@@ -28,14 +28,14 @@ import CounterButton from "@/components/CounterButton.vue";
   },
 })
 export default class ItemCounter extends Vue {
-  private count = 1;
+  count = 1;
 
-  add() {
+  add(): void {
     ++this.count;
     this.$emit("change", this.count);
   }
 
-  remove() {
+  remove(): void {
     if (this.count === 1) return;
     --this.count;
     this.$emit("change", this.count);

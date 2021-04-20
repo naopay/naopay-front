@@ -1,10 +1,10 @@
-import Vue from 'vue'
-import VueRouter, { RouteConfig } from 'vue-router'
-import Order from '@/views/order/Order.vue'
-import Transactions from '@/views/transactions/Transactions.vue'
-import Signup from '@/views/Signup.vue'
+import Vue from 'vue';
+import VueRouter, { RouteConfig } from 'vue-router';
+import Order from '@/views/order/Order.vue';
+import Transactions from '@/views/transactions/Transactions.vue';
+import Signup from '@/views/Signup.vue';
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
@@ -23,12 +23,12 @@ const routes: Array<RouteConfig> = [
     name: 'Signup',
     component: Signup
   }
-]
+];
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
-})
+});
 
-export default router
+export default router;

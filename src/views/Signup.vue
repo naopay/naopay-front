@@ -15,10 +15,10 @@
 
         <div class="break-words text-center mt-4">{{ seed }}</div>
       </div>
-      <TButton v-if="!publicKey" @click.native="generateSeed"
-        >Create a Nano Wallet</TButton
-      >
-      <TButton v-if="publicKey" @click.native="login">Connect</TButton>
+      <Button v-if="!publicKey" @click.native="generateSeed">
+        Create a Nano Wallet
+      </Button>
+      <Button v-if="publicKey" @click.native="login">Connect</Button>
     </div>
   </div>
 </template>
@@ -27,9 +27,12 @@
 import { Component, Vue } from "vue-property-decorator";
 import { nanoModule } from "@/store/nano";
 import Icon from "@/components/Icon.vue";
+import Button from "@/components/Button.vue";
+
 @Component({
   components: {
     Icon,
+    Button
   },
 })
 export default class Signup extends Vue {

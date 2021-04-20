@@ -34,12 +34,12 @@ import Icon from "./Icon.vue";
 })
 export default class ExtraCard extends Vue {
   @Prop()
-  private extra!: Extra;
+  extra!: Extra;
 
   @Prop({ default: false })
-  private selected!: boolean;
+  selected!: boolean;
 
-  get color() {
+  get color(): string {
     return this.selected ? "selected" : "unselected";
   }
 }

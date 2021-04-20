@@ -54,9 +54,9 @@
       <div>Total</div>
       <div>${{ totalAmount.toFixed(2) }}</div>
     </div>
-    <TButton v-if="items.length" class="text-2xl h-20" @click="checkout">
+    <Button v-if="items.length" class="text-2xl h-20" @click="checkout">
       Checkout {{ totalNanoAmount.toFixed(3) }} ⋰⋅⋰
-    </TButton>
+    </Button>
   </div>
 </template>
 
@@ -64,19 +64,21 @@
 import { cartModule } from "@/store/cart";
 import { Component, Vue } from "vue-property-decorator";
 import { Item } from "@/models/item";
-import CartItem from "@/components/CartItem.vue";
-import Icon from "@/components/Icon.vue";
 import { tickerModule } from "@/store/ticker";
 import { transactionModule } from "@/store/transaction";
 import { nanoModule } from "@/store/nano";
 import { tools } from "nanocurrency-web";
 import LottieAnimation from "lottie-vuejs/src/LottieAnimation.vue";
+import CartItem from "@/components/CartItem.vue";
+import Icon from "@/components/Icon.vue";
+import Button from "@/components/Button.vue";
 
 @Component({
   components: {
+    LottieAnimation,
     CartItem,
     Icon,
-    LottieAnimation,
+    Button
   },
 })
 export default class Cart extends Vue {
