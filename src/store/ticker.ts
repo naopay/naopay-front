@@ -1,5 +1,5 @@
-import { VuexModule, Module, Mutation, Action } from "vuex-class-modules"
-import store from "@/store"
+import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
+import store from "@/store";
 
 @Module
 class TickerModule extends VuexModule {

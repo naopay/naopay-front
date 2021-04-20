@@ -66,7 +66,7 @@ import { Component, Vue } from "vue-property-decorator";
 import { Item } from "@/models/item";
 import { tickerModule } from "@/store/ticker";
 import { transactionModule } from "@/store/transaction";
-import { nanoModule } from "@/store/nano";
+import { walletModule } from "@/store/wallet";
 import { tools } from "nanocurrency-web";
 import LottieAnimation from "lottie-vuejs/src/LottieAnimation.vue";
 import CartItem from "@/components/CartItem.vue";
@@ -85,7 +85,7 @@ export default class Cart extends Vue {
   checkout() {
     cartModule.checkout();
     transactionModule.subscribeWebsocket({
-      account: nanoModule.address,
+      account: walletModule.address,
       price: tools.convert(this.totalNanoAmount.toFixed(3), "NANO", "RAW"),
     });
   }

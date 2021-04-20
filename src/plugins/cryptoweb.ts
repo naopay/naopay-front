@@ -34,7 +34,7 @@ const callOnStore = (): Promise<IDBObjectStore> => {
   });
 };
 
-const encrypt = (data: ArrayBuffer, keys: CryptoKeyPair): Promise<ArrayBuffer> => {
+const encrypt = (data: ArrayBuffer, keys: CryptoKeyPair) => {
   return window.crypto.subtle.encrypt(
     { name: "RSA-OAEP" },
     keys.publicKey,
@@ -65,7 +65,7 @@ const encryptDataSaveKey = async (data: ArrayBuffer, keys: CryptoKeyPair): Promi
   store.put({ id: 1, keys, encrypted });
 };
 
-const makeKeys = (): Promise<CryptoKeyPair> => {
+const makeKeys = () => {
   return window.crypto.subtle.generateKey(
     {
       name: "RSA-OAEP",

@@ -1,14 +1,13 @@
-import { VuexModule, Module, Mutation, Action } from "vuex-class-modules"
-import store from "@/store"
-import { MessageBlock, TransactionBlock, TransactionInfo } from "@/models/transaction"
-import { terminalWSModule } from "./terminal-ws"
-import { http, powClient, rpcClient } from "@/plugins/http"
-import { nanoModule } from "./nano"
-import { block } from 'nanocurrency-web'
-import { SignedBlock } from "nanocurrency-web/dist/lib/block-signer"
-import { cartModule } from "./cart"
-import { PaymentStatus } from "../models/payment-status"
-import { Item } from "@/models/item"
+import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
+import store from "@/store";
+import { MessageBlock, TransactionBlock, TransactionInfo } from "@/models/transaction";
+import { terminalWSModule } from "./terminal-ws";
+import { walletModule } from "./wallet";
+import { cartModule } from "./cart";
+import { PaymentStatus } from "../models/payment-status";
+import { Nano } from "@/plugins/nano";
+import { Item } from "@/models/item";
+import { http } from "@/plugins/http";
 
 @Module
 class TransactionModule extends VuexModule {
@@ -81,10 +80,10 @@ class TransactionModule extends VuexModule {
             cartModule.sendToTerminal(false);
           }, 2000);
 
-          const receiveBlock = await this.createBlockReceive(messageBlock);
-          await this.processBlock(receiveBlock, false);
-          const sendBlock = await this.createBlockSend(messageBlock.amount, messageBlock.account);
-          await this.processBlock(sendBlock, true);
+          const receiveBlock = await Nano.createBlockReceive(messageBlock, walletModule.privateKey, walletModule.address);
+          await Nano.processBlock(receiveBlock, false);
+          const sendBlock = await Nano.createBlockSend(messageBlock.amount, walletModule.privateKey, walletModule.address, messageBlock.account);
+          await Nano.processBlock(sendBlock, true);
           return;
         }
 
@@ -93,7 +92,7 @@ class TransactionModule extends VuexModule {
         const items = [...cartModule.items];
         const totalAmount = cartModule.totalAmount.toString();
         const totalNano = cartModule.totalNanoAmount.toFixed(3);
-        this.saveTransactionDB(items, totalAmount, totalNano, messageBlock.hash, messageBlock.account, nanoModule.address);
+        this.saveTransaction(items, totalAmount, totalNano, messageBlock.hash, messageBlock.account, walletModule.address);
 
         this.setStatus(PaymentStatus.ACCEPTED);
         setTimeout(() => {
@@ -101,8 +100,8 @@ class TransactionModule extends VuexModule {
           this.setStatus(PaymentStatus.NONE);
         }, 2000);
 
-        const receiveBlock = await this.createBlockReceive(messageBlock);
-        this.processBlock(receiveBlock, false);
+        const receiveBlock = await Nano.createBlockReceive(messageBlock, walletModule.privateKey, walletModule.address);
+        Nano.processBlock(receiveBlock, false);
         ws.close();
       }
     }
@@ -110,7 +109,7 @@ class TransactionModule extends VuexModule {
     this.setTransactionWs(ws);
   }
 
-  private async saveTransactionDB(items: Item[], total: string, totalNano: string, txid: string, sender: string, receiver: string) {
+  private async saveTransaction(items: Item[], total: string, totalNano: string, txid: string, sender: string, receiver: string) {
     const products = items.map((item) => {
       return {
         product: item._id,
@@ -132,98 +131,6 @@ class TransactionModule extends VuexModule {
 
     const res = await http.post(`/transactions`, transaction);
     return res.data;
-  }
-
-
-
-  private async processBlock(block: SignedBlock, send: boolean) {
-    const processQuery = {
-      action: "process",
-      json_block: "true",
-      block: block,
-      subtype: send ? "send" : "receive"
-    };
-
-    const res = await rpcClient.post(`/`, processQuery);
-    return res.data.hash;
-  }
-
-  private async generateWork(hash: string) {
-    const difficulty = await powClient.post(`/`, { action: "active_difficulty" });
-
-    const generateWorkReq = {
-      action: "work_generate",
-      hash: hash,
-      difficulty: difficulty.data.network_current
-    };
-    const res = await powClient.post(`/`, generateWorkReq);
-
-    return res.data.work;
-  }
-
-  private async getAccountKey(account: string) {
-    const accountInfo = {
-      action: "account_key",
-      account: account
-    };
-    const res = await rpcClient.post(`/`, accountInfo);
-    return res.data.key;
-  }
-
-  private async getWalletInfo(account: string) {
-    const accountInfo = {
-      action: "account_info",
-      account: account
-    };
-    const res = await rpcClient.post(`/`, accountInfo)
-    if (res.data.error) {
-      return {
-        frontier: "0".repeat(64),
-        balance: "0"
-      };
-    }
-
-    return {
-      frontier: res.data.frontier,
-      balance: res.data.balance,
-    };
-  }
-
-  private async createBlockReceive(message: MessageBlock) {
-    const walletPK = nanoModule.privateKey;
-    const walletInfo = await this.getWalletInfo(message.block.link_as_account);
-    let hash;
-    if (walletInfo.frontier === "0".repeat(64)) {
-      hash = await this.getAccountKey(nanoModule.address);
-    } else {
-      hash = walletInfo.frontier;
-    }
-    const work = await this.generateWork(hash);
-    return block.receive({
-      walletBalanceRaw: walletInfo.balance,
-      amountRaw: message.amount,
-      toAddress: nanoModule.address,
-      representativeAddress: nanoModule.address,
-      transactionHash: message.hash,
-      work: work,
-      frontier: walletInfo.frontier
-    }, walletPK);
-  }
-
-  private async createBlockSend(amountRaw: string, toAddress: string) {
-    const walletPK = nanoModule.privateKey;
-    const walletInfo = await this.getWalletInfo(nanoModule.address);
-    const hash = walletInfo.frontier;
-    const work = await this.generateWork(hash);
-    return block.send({
-      walletBalanceRaw: walletInfo.balance,
-      amountRaw,
-      fromAddress: nanoModule.address,
-      toAddress,
-      representativeAddress: nanoModule.address,
-      work,
-      frontier: walletInfo.frontier
-    }, walletPK);
   }
 
 }

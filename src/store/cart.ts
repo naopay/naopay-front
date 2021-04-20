@@ -1,12 +1,12 @@
-import { VuexModule, Module, Mutation, Action } from "vuex-class-modules"
-import store from "@/store"
-import { Item } from "@/models/item"
-import { itemsModule } from "./items"
-import { tickerModule } from "./ticker"
-import { terminalWSModule } from "./terminal-ws"
-import { tools } from 'nanocurrency-web'
-import { nanoModule } from "./nano"
-import { transactionModule } from "./transaction"
+import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
+import store from "@/store";
+import { Item } from "@/models/item";
+import { itemsModule } from "./items";
+import { tickerModule } from "./ticker";
+import { terminalWSModule } from "./terminal-ws";
+import { tools } from "nanocurrency-web";
+import { walletModule } from "./wallet";
+import { transactionModule } from "./transaction";
 
 @Module
 class CartModule extends VuexModule {
@@ -115,7 +115,7 @@ class CartModule extends VuexModule {
       amount: this.totalAmount,
       nanoRawAmount: nanoRawAmount,
       requestPayment: requestPayment,
-      posAddress: nanoModule.address
+      posAddress: walletModule.address
     });
   }
 

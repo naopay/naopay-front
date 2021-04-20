@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { nanoModule } from "@/store/nano";
+import { walletModule } from "@/store/wallet";
 import Icon from "@/components/Icon.vue";
 import Button from "@/components/Button.vue";
 
@@ -37,24 +37,24 @@ import Button from "@/components/Button.vue";
 })
 export default class Signup extends Vue {
   get seed() {
-    return nanoModule.seed;
+    return walletModule.seed;
   }
 
   get publicKey() {
-    return nanoModule.publicKey;
+    return walletModule.publicKey;
   }
 
   get statusConnection() {
-    return nanoModule.connected;
+    return walletModule.connected;
   }
 
   generateSeed(): void {
-    nanoModule.generateSeed();
+    walletModule.generateSeed();
   }
 
   async login(): Promise<void> {
-    await nanoModule.login();
-    if (nanoModule.connected) {
+    await walletModule.login();
+    if (walletModule.connected) {
       this.$router.push({ name: "Order" });
     }
   }

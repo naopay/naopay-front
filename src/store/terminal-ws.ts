@@ -1,6 +1,6 @@
-import { VuexModule, Module, Mutation, Action } from "vuex-class-modules"
-import store from "@/store"
-import socketio from "socket.io-client"
+import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
+import store from "@/store";
+import socketio from "socket.io-client";
 
 @Module
 class TerminalWSModule extends VuexModule {

@@ -1,9 +1,8 @@
 import base64url from "base64url";
-import { encode } from 'base64-arraybuffer'
+import { encode } from "base64-arraybuffer";
 import { http } from "./http";
-import { CryptoWeb } from './cryptoweb';
-import { AES } from 'crypto-js';
-import CryptoJS from 'crypto-js'
+import { CryptoWeb } from "./cryptoweb";
+import { AES, enc } from "crypto-js";
 
 const publicKeyCredentialToJSON = (pubKeyCred: any): any => {
   if (pubKeyCred instanceof Array) {
@@ -84,7 +83,7 @@ const loginWebAuthn = async (username: string): Promise<string | undefined> => {
     if (serveResp) {
       const dec = new TextDecoder("utf-8")
       const aesKey = dec.decode(await CryptoWeb.getKeyDecrypt());
-      return AES.decrypt(serveResp, aesKey).toString(CryptoJS.enc.Utf8);
+      return AES.decrypt(serveResp, aesKey).toString(enc.Utf8);
     }
   }
 };

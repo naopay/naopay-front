@@ -1,13 +1,13 @@
-import { VuexModule, Module, Mutation, Action } from "vuex-class-modules"
-import { CryptoWeb } from "@/plugins/cryptoweb"
-import AES from 'crypto-js/aes'
-import CryptoJS from 'crypto-js'
+import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
+import { CryptoWeb } from "@/plugins/cryptoweb";
+import AES from "crypto-js/aes";
+import CryptoJS from "crypto-js";
 import store from "@/store";
-import { WebAuthn } from "@/plugins/webauthn"
-import { wallet } from 'nanocurrency-web'
+import { WebAuthn } from "@/plugins/webauthn";
+import { wallet } from "nanocurrency-web";
 
 @Module
-class NanoModule extends VuexModule {
+class WalletModule extends VuexModule {
   seed = "";
   username = "";
   connected = false;
@@ -98,5 +98,5 @@ class NanoModule extends VuexModule {
   }
 }
 
-export const nanoModule = new NanoModule({ store, name: "nano" });
+export const walletModule = new WalletModule({ store, name: "wallet" });
 
