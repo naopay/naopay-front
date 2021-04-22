@@ -39,9 +39,7 @@ class WalletModule extends VuexModule {
 
     const registerSuccess = await WebAuthn.registerWebAuthn(publicKey, cipher)
 
-    if (registerSuccess) {
-      // TODO Successful register
-    } else {
+    if (!registerSuccess) {
       throw new Error("Sign In KO")
     }
   }

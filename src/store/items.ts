@@ -7,29 +7,29 @@ import { Extra } from "@/models/extra";
 
 @Module
 class ItemsModule extends VuexModule {
-  currentCategory: Category | undefined = undefined
-  currentItem: Item | undefined = undefined
-  categories: Category[] = []
+  currentCategory: Category | undefined = undefined;
+  currentItem: Item | undefined = undefined;
+  categories: Category[] = [];
 
   get currentItems(): Item[] {
-    return this.currentCategory?.items ?? []
+    return this.currentCategory?.items ?? [];
   }
 
   get currentExtras(): Extra[] {
-    return this.currentItem?.extras ?? []
+    return this.currentItem?.extras ?? [];
   }
 
   @Mutation
   setCategories(categories: Category[]) {
-    this.categories = categories
+    this.categories = categories;
   }
 
   @Mutation
   setCategoryItems(params: { categoryId: string; items: Item[] }) {
-    const category = this.categories.find(cat => cat._id === params.categoryId)
+    const category = this.categories.find(cat => cat._id === params.categoryId);
     if (category) {
-      category.items = params.items
-      this.currentCategory = category
+      category.items = params.items;
+      this.currentCategory = category;
     }
   }
 
@@ -42,26 +42,26 @@ class ItemsModule extends VuexModule {
   async fetchCategories() {
     if (this.categories?.length) return;
     
-    const res = await http.get('/categories')
+    const res = await http.get('/categories');
     if (res.status === 200) {
-      this.setCategories(res.data)
+      this.setCategories(res.data);
     }
   }
 
   @Action
   async selectCategory(categoryId: string) {
-    const res = await http.get<Item[]>(`/categories/${categoryId}`)
+    const res = await http.get<Item[]>(`/categories/${categoryId}`);
     if (res.status === 200) {
-      this.setCurrentItem(undefined)
-      this.setCategoryItems({ categoryId: categoryId, items: res.data })
+      this.setCurrentItem(undefined);
+      this.setCategoryItems({ categoryId: categoryId, items: res.data });
     }
   }
 
   @Action
   selectItem(itemId: string) {
-    const selected = this.currentCategory?.items.find(it => it._id === itemId)
-    if (!selected) return
-    this.setCurrentItem(selected)
+    const selected = this.currentCategory?.items.find(it => it._id === itemId);
+    if (!selected) return;
+    this.setCurrentItem(selected);
   }
 }
 

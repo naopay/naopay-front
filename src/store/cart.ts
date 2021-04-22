@@ -10,7 +10,7 @@ import { transactionModule } from "./transaction";
 
 @Module
 class CartModule extends VuexModule {
-  items: Item[] = []
+  items: Item[] = [];
 
   get totalAmount(): number {
     return this.items.map(it => {
@@ -89,14 +89,14 @@ class CartModule extends VuexModule {
 
   @Action
   removeAllFromCart(item: Item) {
-    this.remove(item)
+    this.remove(item);
     transactionModule.cancelCurrentRequest();
     this.sendToTerminal();
   }
 
   @Action
   clearCart() {
-    this.emptyItems()
+    this.emptyItems();
     transactionModule.cancelCurrentRequest();
     this.sendToTerminal();
   }
