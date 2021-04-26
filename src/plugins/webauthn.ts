@@ -3,6 +3,7 @@ import { encode } from "base64-arraybuffer";
 import { http } from "./http";
 import { CryptoWeb } from "./cryptoweb";
 import { AES, enc } from "crypto-js";
+import { WebAuthnResponse } from "@/models/webauthn-response";
 
 const publicKeyCredentialToJSON = (pubKeyCred: any): any => {
   if (pubKeyCred instanceof Array) {
@@ -45,7 +46,7 @@ const preformatGetAssertReq = (getAssert: any) => {
 const sendCredentialResponse = async (credential: PublicKeyCredential, username: string) => {
   const responseWeb = publicKeyCredentialToJSON(credential)
   responseWeb.username = username;
-  const res = await http.post(`/webauthn/response`, responseWeb);
+  const res = await http.post<WebAuthnResponse>(`auth/webauthn/response`, responseWeb);
   if (res.status === 202) {
     return res.data;
   }
@@ -54,7 +55,7 @@ const sendCredentialResponse = async (credential: PublicKeyCredential, username:
 };
 
 const registerWebAuthn = async (username: string, cipher: string): Promise<boolean> => {
-  const res = await http.post(`/webauthn/register`, { username: username, cipher: cipher })
+  const res = await http.post(`auth/webauthn/register`, { username: username, cipher: cipher })
   if (res.status === 201) {
     res.data.challenge = base64url.toBuffer(res.data.challenge)
     res.data.user.id = base64url.toBuffer(res.data.user.id)
@@ -71,7 +72,7 @@ const registerWebAuthn = async (username: string, cipher: string): Promise<boole
 
 const loginWebAuthn = async (username: string): Promise<string | undefined> => {
   if (username === "") throw new Error("Username Not Set")
-  const res = await http.post(`/webauthn/login`, { username: username })
+  const res = await http.post(`auth/webauthn/login`, { username: username })
   if (res.status == 200) {
     const serverAssert = preformatGetAssertReq(res.data);
     const credential = (await navigator.credentials.get({
@@ -80,10 +81,14 @@ const loginWebAuthn = async (username: string): Promise<string | undefined> => {
 
     // Get server things here
     const serveResp = await sendCredentialResponse(credential, username)
-    if (serveResp) {
+
+    http.setAccessToken(serveResp.tokens.accessToken);
+    http.setRefreshToken(serveResp.tokens.refreshToken);
+    
+    if (serveResp.cipher) {
       const dec = new TextDecoder("utf-8")
       const aesKey = dec.decode(await CryptoWeb.getKeyDecrypt());
-      return AES.decrypt(serveResp, aesKey).toString(enc.Utf8);
+      return AES.decrypt(serveResp.cipher, aesKey).toString(enc.Utf8);
     }
   }
 };
