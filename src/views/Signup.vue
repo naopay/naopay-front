@@ -1,7 +1,7 @@
 <template>
   <div class="w-full flex justify-center items-center bg-dark">
     <div class="w-1/2 bg-white flex flex-col gap-y-4 items-center p-8 rounded">
-      <div class="text-5xl font-semibold">NaoPay</div>
+      <div class="text-5xl">Naopay</div>
       <div v-if="seed" class="w-full text-xl">
         <div
           class="bg-red-500 text-white flex items-center gap-x-3 px-3 py-4 rounded"

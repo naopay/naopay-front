@@ -1,5 +1,5 @@
 <template>
-  <transition-group class="flex items-center h-16 gap-x-8" name="slide-fade">
+  <transition-group class="flex items-center min-h-16 gap-x-8" name="slide-fade">
     <div
       @click="onItemClick"
       key="details"
@@ -79,6 +79,10 @@ export default class CartItem extends Vue {
 </script>
 
 <style scoped>
+.min-h-16 {
+  min-height: 4rem;
+}
+
 .slide-fade-enter-active {
   transition: all 200ms ease;
 }

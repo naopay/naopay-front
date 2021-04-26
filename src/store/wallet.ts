@@ -1,6 +1,7 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
 import { CryptoWeb } from "@/plugins/cryptoweb";
 import AES from "crypto-js/aes";
+import Hex from "crypto-js/enc-hex"
 import CryptoJS from "crypto-js";
 import store from "@/store";
 import { WebAuthn } from "@/plugins/webauthn";
@@ -23,7 +24,7 @@ class WalletModule extends VuexModule {
     const privateKey = w.accounts[0].privateKey;
     const publicKey = w.accounts[0].publicKey;
     const address = w.accounts[0].address;
-    const safeArray = CryptoJS.enc.Hex.stringify(CryptoJS.lib.WordArray.random(32))
+    const safeArray = Hex.stringify(CryptoJS.lib.WordArray.random(32))
     localStorage.setItem('publickey', publicKey);
     localStorage.setItem('address', address);
     this.setSeed(seed)

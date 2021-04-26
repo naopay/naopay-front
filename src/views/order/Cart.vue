@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex flex-col gap-y-8 justify-between text-white">
+  <div class="relative flex flex-col gap-y-8 text-white">
     <div
       class="flex justify-between items-center h-20 bg-unselected rounded shadow"
     >
@@ -41,7 +41,7 @@
     >
       <li
         v-for="item in items"
-        :key="item._id + item.extras.map((e) => e._id).join('-')"
+        :key="generateItemUID(item)"
       >
         <CartItem
           :item="item"
@@ -54,7 +54,7 @@
       <div>Total</div>
       <div>${{ totalAmount.toFixed(2) }}</div>
     </div>
-    <Button v-if="items.length" class="text-2xl h-20" @click="checkout">
+    <Button v-if="items.length" @click="checkout" class="h-20 text-xl">
       Checkout {{ totalNanoAmount.toFixed(3) }} ⋰⋅⋰
     </Button>
   </div>
@@ -72,6 +72,7 @@ import LottieAnimation from "lottie-vuejs/src/LottieAnimation.vue";
 import CartItem from "@/components/CartItem.vue";
 import Icon from "@/components/Icon.vue";
 import Button from "@/components/Button.vue";
+import SHA1 from "crypto-js/sha1";
 
 @Component({
   components: {
@@ -100,6 +101,11 @@ export default class Cart extends Vue {
 
   clearCart() {
     cartModule.clearCart();
+  }
+
+  generateItemUID(item: Item): string {
+    const uid = item._id + item.extras.map((e) => e._id).join('-');
+    return SHA1(uid).toString();
   }
 
   get transactionAccepted(): boolean {

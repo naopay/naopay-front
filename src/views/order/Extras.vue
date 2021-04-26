@@ -13,7 +13,7 @@
     </div>
     <div class="flex gap-4">
       <ItemCounter @change="itemCount = $event" />
-      <Button @click.native="addToCart" class="flex-1 text-2xl h-20">
+      <Button @click.native="addToCart" class="flex-1 text-xl">
         Add to cart
       </Button>
     </div>
@@ -22,6 +22,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import Button from "@/components/Button.vue";
 import ExtraCard from "@/components/ExtraCard.vue";
 import ItemCounter from "@/components/ItemCounter.vue";
 import { itemsModule } from "@/store/items";
@@ -33,6 +34,7 @@ import { cartModule } from "@/store/cart";
   components: {
     ExtraCard,
     ItemCounter,
+    Button
   },
 })
 export default class Extras extends Vue {
