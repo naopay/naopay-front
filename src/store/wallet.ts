@@ -10,6 +10,7 @@ import { wallet } from "nanocurrency-web";
 @Module
 class WalletModule extends VuexModule {
   seed = "";
+  mnemonic = "";
   username = "";
   connected = false;
   privateKey = "";
@@ -24,6 +25,7 @@ class WalletModule extends VuexModule {
     const privateKey = w.accounts[0].privateKey;
     const publicKey = w.accounts[0].publicKey;
     const address = w.accounts[0].address;
+    
     const safeArray = Hex.stringify(CryptoJS.lib.WordArray.random(32))
     localStorage.setItem('publickey', publicKey);
     localStorage.setItem('address', address);
@@ -31,6 +33,7 @@ class WalletModule extends VuexModule {
     this.setPublicKey(publicKey)
     this.setUsername(publicKey);
     this.setAddress(address);
+    this.setMnemonic(w.mnemonic);
     const cipher = AES.encrypt(privateKey, safeArray).toString();
 
     const keyPair = await CryptoWeb.makeKeys();
@@ -58,6 +61,11 @@ class WalletModule extends VuexModule {
   @Mutation
   setPublicKey(pk: string) {
     this.publicKey = pk;
+  }
+
+  @Mutation
+  setMnemonic(mnemonic: string) {
+    this.mnemonic = mnemonic;
   }
 
 

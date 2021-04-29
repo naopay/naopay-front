@@ -14,6 +14,7 @@
         </div>
 
         <div class="break-words text-center mt-4">{{ seed }}</div>
+        <div class="break-words text-center mt-4">{{ mnemonic }}</div>
       </div>
       <Button v-if="!publicKey" @click.native="generateSeed">
         Create a Nano Wallet
@@ -38,6 +39,10 @@ import Button from "@/components/Button.vue";
 export default class Signup extends Vue {
   get seed() {
     return walletModule.seed;
+  }
+
+  get mnemonic() {
+    return walletModule.mnemonic;
   }
 
   get publicKey() {

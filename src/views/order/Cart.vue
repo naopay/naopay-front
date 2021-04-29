@@ -54,7 +54,7 @@
       <div>Total</div>
       <div>${{ totalAmount.toFixed(2) }}</div>
     </div>
-    <Button v-if="items.length" @click="checkout" class="h-20 text-xl">
+    <Button v-if="items.length" @click.native="checkout" class="h-20 text-xl">
       Checkout {{ totalNanoAmount.toFixed(3) }} ⋰⋅⋰
     </Button>
   </div>
