@@ -7,8 +7,7 @@ npm install
 __.env__ settings
 
 <ul>
-  <li><b>VUE_APP_BACKEND_WS</b>: Websocket to nanopos-back</li>
- <li><b>VUE_APP_NODE_REP</b>: Representative of your account</li>
+ <li><b>VUE_APP_BACKEND_WS</b>: Websocket to nanopos-back</li>
  <li><b>VUE_APP_RPC_URL</b>: RPC URL</li>
  <li><b>VUE_APP_BACK_URL</b>: nanopos-back URL</li>
  <li><b>VUE_APP_WSS_URL</b>: RPC Websocket</li>

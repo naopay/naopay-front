@@ -1,13 +1,13 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
 import store from "@/store";
 import { MessageBlock, TransactionBlock, TransactionInfo } from "@/models/transaction";
-import { terminalWSModule } from "./terminal-ws";
+import { terminalModule } from "./terminal";
 import { walletModule } from "./wallet";
 import { cartModule } from "./cart";
 import { PaymentStatus } from "../models/payment-status";
-import { Nano } from "@/plugins/nano";
+import { Nano } from "@/services/nano";
 import { Item } from "@/models/item";
-import { http } from "@/plugins/http";
+import { http } from "@/services/http";
 
 @Module
 class TransactionModule extends VuexModule {
@@ -71,7 +71,7 @@ class TransactionModule extends VuexModule {
       const transactionBlock = messageBlock.block as TransactionBlock;
       if (transactionBlock.subtype === "send") {
         if (messageBlock.amount !== transaction.price) {
-          terminalWSModule.sendToTerminal("transaction", { accepted: false });
+          terminalModule.sendToTerminal("transaction", { accepted: false });
 
           this.setStatus(PaymentStatus.REJECTED);
 
@@ -87,7 +87,7 @@ class TransactionModule extends VuexModule {
           return;
         }
 
-        terminalWSModule.sendToTerminal("transaction", { accepted: true });
+        terminalModule.sendToTerminal("transaction", { accepted: true });
 
         const items = [...cartModule.items];
         const totalAmount = cartModule.totalAmount.toString();

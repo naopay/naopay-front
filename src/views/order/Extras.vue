@@ -13,7 +13,7 @@
     </div>
     <div class="flex gap-4">
       <ItemCounter @change="itemCount = $event" />
-      <Button @click.native="addToCart" class="flex-1 text-xl">
+      <Button @click.native="addToCart" class="flex-1">
         Add to cart
       </Button>
     </div>

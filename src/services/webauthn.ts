@@ -46,7 +46,7 @@ const preformatGetAssertReq = (getAssert: any) => {
 const sendCredentialResponse = async (credential: PublicKeyCredential, username: string) => {
   const responseWeb = publicKeyCredentialToJSON(credential)
   responseWeb.username = username;
-  const res = await http.post<WebAuthnResponse>(`auth/webauthn/response`, responseWeb);
+  const res = await http.post<WebAuthnResponse>("/auth/webauthn/response", responseWeb);
   if (res.status === 202) {
     return res.data;
   }
@@ -55,7 +55,7 @@ const sendCredentialResponse = async (credential: PublicKeyCredential, username:
 };
 
 const registerWebAuthn = async (username: string, cipher: string): Promise<boolean> => {
-  const res = await http.post(`auth/webauthn/register`, { username: username, cipher: cipher })
+  const res = await http.post("/auth/webauthn/register", { username: username, cipher: cipher })
   if (res.status === 201) {
     res.data.challenge = base64url.toBuffer(res.data.challenge)
     res.data.user.id = base64url.toBuffer(res.data.user.id)
@@ -72,7 +72,7 @@ const registerWebAuthn = async (username: string, cipher: string): Promise<boole
 
 const loginWebAuthn = async (username: string): Promise<string | undefined> => {
   if (username === "") throw new Error("Username Not Set")
-  const res = await http.post(`auth/webauthn/login`, { username: username })
+  const res = await http.post("/auth/webauthn/login", { username: username })
   if (res.status == 200) {
     const serverAssert = preformatGetAssertReq(res.data);
     const credential = (await navigator.credentials.get({

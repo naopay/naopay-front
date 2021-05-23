@@ -1,6 +1,6 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
 import store from "@/store";
-import { http } from "@/plugins/http";
+import { http } from "@/services/http";
 import { Category } from "@/models/category";
 import { Item } from "@/models/item";
 import { Extra } from "@/models/extra";

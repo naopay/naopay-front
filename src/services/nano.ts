@@ -1,8 +1,7 @@
-import { Item } from "@/models/item";
 import { MessageBlock } from "@/models/transaction";
 import { block } from "nanocurrency-web";
 import { SignedBlock } from "nanocurrency-web/dist/lib/block-signer";
-import { http, powClient, rpcClient } from "./http";
+import { powClient, rpcClient } from "./http";
 
 const generateWork = async (hash: string) => {
   const difficulty = await powClient.post(`/`, { action: "active_difficulty" });

@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import Icon from "@/components/Icon.vue";
 import CounterButton from "@/components/CounterButton.vue";
 

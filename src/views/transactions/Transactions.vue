@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h1>Transactions</h1>
+  <div class="w-full flex gap-8 p-8 bg-dark">
+    <div class="text-2xl text-lighter">🚧 Not implemented yet</div>
   </div>
 </template>
 

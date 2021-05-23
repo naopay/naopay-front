@@ -3,7 +3,7 @@ import store from "@/store";
 import { Item } from "@/models/item";
 import { itemsModule } from "./items";
 import { tickerModule } from "./ticker";
-import { terminalWSModule } from "./terminal-ws";
+import { terminalModule } from "./terminal";
 import { tools } from "nanocurrency-web";
 import { walletModule } from "./wallet";
 import { transactionModule } from "./transaction";
@@ -14,8 +14,8 @@ class CartModule extends VuexModule {
 
   get totalAmount(): number {
     return this.items.map(it => {
-      return (it.count! * it.price)
-        + it.count! * (it.extras.map(e => e.price).reduce((a, b) => a + b, 0))
+      return (it.count * it.price)
+        + it.count * (it.extras.map(e => e.price).reduce((a, b) => a + b, 0))
     }).reduce((a, b) => a + b, 0);
   }
 
@@ -110,7 +110,7 @@ class CartModule extends VuexModule {
     // Round up to 3 decimals
     const nanoRawAmount = tools.convert(this.totalNanoAmount.toFixed(3), "NANO", "RAW");
 
-    terminalWSModule.sendToTerminal("cart", {
+    terminalModule.sendToTerminal("cart", {
       items: this.items,
       amount: this.totalAmount,
       nanoRawAmount: nanoRawAmount,

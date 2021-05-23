@@ -3,7 +3,7 @@ import store from "@/store";
 import socketio from "socket.io-client";
 
 @Module
-class TerminalWSModule extends VuexModule {
+class TerminalModule extends VuexModule {
   socket: SocketIOClient.Socket | any = undefined;
 
   @Mutation
@@ -31,4 +31,4 @@ class TerminalWSModule extends VuexModule {
 
 }
 
-export const terminalWSModule = new TerminalWSModule({ store, name: "terminalWS" })
+export const terminalModule = new TerminalModule({ store, name: "terminal" })

@@ -13,7 +13,7 @@ class TickerModule extends VuexModule {
   @Action
   subscribeWebsocket() {
     const ws = new WebSocket('wss://ws.kraken.com');
-    ws.onopen = (e: any) => {
+    ws.onopen = () => {
       ws.send(JSON.stringify({
         event: "subscribe",
         pair: [

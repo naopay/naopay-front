@@ -7,15 +7,15 @@ let refreshToken: string;
 
 const setAccessToken = (aToken: string) => {
   accessToken = aToken;
-}
+};
 
 const setRefreshToken = (rToken: string) => {
   refreshToken = rToken;
-}
+};
+
 const api = axios.create({
   baseURL: process.env.VUE_APP_BACK_URL,
-})
-
+});
 
 api.interceptors.request.use(
   config => {

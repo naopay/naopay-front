@@ -1,26 +1,27 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
-import { CryptoWeb } from "@/plugins/cryptoweb";
+import { CryptoWeb } from "@/services/cryptoweb";
 import AES from "crypto-js/aes";
 import Hex from "crypto-js/enc-hex"
 import CryptoJS from "crypto-js";
 import store from "@/store";
-import { WebAuthn } from "@/plugins/webauthn";
+import { WebAuthn } from "@/services/webauthn";
 import { wallet } from "nanocurrency-web";
 
 @Module
 class WalletModule extends VuexModule {
   seed = "";
   mnemonic = "";
-  username = "";
-  connected = false;
   privateKey = "";
   publicKey = localStorage.getItem("publickey");
   address = "";
 
+  get isAuthenticated() {
+    return this.privateKey != undefined && this.privateKey.length > 0;
+  }
+
   @Action
   async generateSeed() {
     const w = wallet.generate();
-    const seed = w.seed;
 
     const privateKey = w.accounts[0].privateKey;
     const publicKey = w.accounts[0].publicKey;
@@ -29,22 +30,21 @@ class WalletModule extends VuexModule {
     const safeArray = Hex.stringify(CryptoJS.lib.WordArray.random(32))
     localStorage.setItem('publickey', publicKey);
     localStorage.setItem('address', address);
-    this.setSeed(seed)
-    this.setPublicKey(publicKey)
-    this.setUsername(publicKey);
-    this.setAddress(address);
+    this.setSeed(w.seed);
     this.setMnemonic(w.mnemonic);
+    this.setPublicKey(publicKey);
+    this.setAddress(address);
     const cipher = AES.encrypt(privateKey, safeArray).toString();
 
     const keyPair = await CryptoWeb.makeKeys();
     const enc = new TextEncoder();
 
-    await CryptoWeb.encryptDataSaveKey(enc.encode(safeArray), keyPair)
+    await CryptoWeb.encryptDataSaveKey(enc.encode(safeArray), keyPair);
 
-    const registerSuccess = await WebAuthn.registerWebAuthn(publicKey, cipher)
+    const registerSuccess = await WebAuthn.registerWebAuthn(publicKey, cipher);
 
     if (!registerSuccess) {
-      throw new Error("Sign In KO")
+      throw new Error("Error registering with WebAuthn");
     }
   }
 
@@ -54,40 +54,14 @@ class WalletModule extends VuexModule {
   }
 
   @Mutation
-  setPrivateKey(pk: string) {
-    this.privateKey = pk;
+  setPrivateKey(privateKey: string) {
+    this.privateKey = privateKey;
   }
 
   @Mutation
-  setPublicKey(pk: string) {
-    this.publicKey = pk;
+  setPublicKey(publicKey: string) {
+    this.publicKey = publicKey;
   }
-
-  @Mutation
-  setMnemonic(mnemonic: string) {
-    this.mnemonic = mnemonic;
-  }
-
-
-  @Action
-  async login() {
-    if (!this.username) {
-      const publicKey = localStorage.getItem('publickey');
-      const address = localStorage.getItem("address")
-      if (!publicKey || !address) throw new Error("Please register");
-      this.setPublicKey(publicKey)
-      this.setUsername(publicKey)
-      this.setAddress(address)
-    }
-    const privateKey = await WebAuthn.loginWebAuthn(this.username);
-    if (privateKey) {
-      this.setPrivateKey(privateKey)
-      this.setConnected(true);
-    } else {
-      throw new Error("Login not working");
-    }
-  }
-
 
   @Mutation
   setSeed(seed: string) {
@@ -95,14 +69,29 @@ class WalletModule extends VuexModule {
   }
 
   @Mutation
-  setConnected(state: boolean) {
-    this.connected = state;
+  setMnemonic(mnemonic: string) {
+    this.mnemonic = mnemonic;
   }
 
-  @Mutation
-  setUsername(username: string) {
-    this.username = username;
+  @Action
+  async login(): Promise<boolean> {
+    if (!this.publicKey) {
+      const publicKey = localStorage.getItem('publickey');
+      const address = localStorage.getItem("address");
+      if (!publicKey || !address) throw new Error("Please register");
+      this.setPublicKey(publicKey);
+      this.setAddress(address);
+    }
+
+    const privateKey = await WebAuthn.loginWebAuthn(this.publicKey!);
+    if (privateKey) {
+      this.setPrivateKey(privateKey);
+      return true;
+    } else {
+      return false;
+    }
   }
+
 }
 
 export const walletModule = new WalletModule({ store, name: "wallet" });

@@ -1,29 +1,45 @@
 <template>
   <div id="app" class="h-screen flex">
-    <Nav v-if="$route.name !== 'Signup'"></Nav>
+    <InactiveModal v-if="mustReauthenticate" @click="reauthenticate" />
+    <Nav v-if="$route.name !== 'Login'"></Nav>
     <router-view />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import Nav from "@/components/Nav.vue";
-import { tickerModule } from "./store/ticker";
-import { terminalWSModule } from "./store/terminal-ws";
+import InactiveModal from "@/components/InactiveModal.vue";
 import { walletModule } from "./store/wallet";
+import { http } from "./services/http";
 
 @Component({
   components: {
     Nav,
+    InactiveModal,
   },
 })
 export default class App extends Vue {
-  created() {
-    tickerModule.subscribeWebsocket();
-    terminalWSModule.registerSocket();
+  mustReauthenticate = false;
 
-    if (!walletModule.connected) {
-      this.$router.push("/signup");
+  @Watch("isAppIdle")
+  async onIdle() {
+    //@ts-ignore
+    if (this.isAppIdle && walletModule.isAuthenticated) {
+      this.mustReauthenticate = true;
+
+      http.setAccessToken("");
+      http.setRefreshToken("");
+
+      walletModule.setSeed("");
+      walletModule.setMnemonic("");
+      walletModule.setPrivateKey("");
+    }
+  }
+
+  async reauthenticate() {
+    if (await walletModule.login()) {
+      this.mustReauthenticate = false;
     }
   }
 }
