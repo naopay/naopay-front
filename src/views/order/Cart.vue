@@ -11,7 +11,7 @@
 
     <transition name="pop">
       <div
-        v-if="transactionAccepted"
+        v-if="paymentAccepted"
         class="absolute w-full h-full flex items-center justify-center"
       >
         <div class="w-56">
@@ -23,7 +23,7 @@
         </div>
       </div>
       <div
-        v-if="transactionRejected"
+        v-if="paymentRejected"
         class="absolute w-full h-full flex items-center justify-center"
       >
         <div class="w-56">
@@ -65,7 +65,7 @@ import { cartModule } from "@/store/cart";
 import { Component, Vue } from "vue-property-decorator";
 import { Item } from "@/models/item";
 import { tickerModule } from "@/store/ticker";
-import { transactionModule } from "@/store/transaction";
+import { paymentModule } from "@/store/payment";
 import { walletModule } from "@/store/wallet";
 import { tools } from "nanocurrency-web";
 import LottieAnimation from "lottie-vuejs/src/LottieAnimation.vue";
@@ -85,7 +85,7 @@ import SHA1 from "crypto-js/sha1";
 export default class Cart extends Vue {
   checkout() {
     cartModule.checkout();
-    transactionModule.subscribeWebsocket({
+    paymentModule.subscribeWebsocket({
       account: walletModule.address,
       price: tools.convert(this.totalNanoAmount.toFixed(3), "NANO", "RAW"),
     });
@@ -108,12 +108,12 @@ export default class Cart extends Vue {
     return SHA1(uid).toString();
   }
 
-  get transactionAccepted(): boolean {
-    return transactionModule.transactionIsAccepted;
+  get paymentAccepted(): boolean {
+    return paymentModule.paymentAccepted;
   }
 
-  get transactionRejected(): boolean {
-    return transactionModule.transactionIsRejected;
+  get paymentRejected(): boolean {
+    return paymentModule.paymentRejected;
   }
 
   get ticker(): number {

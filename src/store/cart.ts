@@ -6,7 +6,7 @@ import { tickerModule } from "./ticker";
 import { terminalModule } from "./terminal";
 import { tools } from "nanocurrency-web";
 import { walletModule } from "./wallet";
-import { transactionModule } from "./transaction";
+import { paymentModule } from "./payment";
 
 @Module
 class CartModule extends VuexModule {
@@ -69,7 +69,7 @@ class CartModule extends VuexModule {
     }
 
     itemsModule.setCurrentItem(undefined);
-    transactionModule.cancelCurrentRequest();
+    paymentModule.cancelCurrentRequest();
     this.sendToTerminal();
   }
 
@@ -83,21 +83,21 @@ class CartModule extends VuexModule {
     } else {
       this.remove(item);
     }
-    transactionModule.cancelCurrentRequest();
+    paymentModule.cancelCurrentRequest();
     this.sendToTerminal();
   }
 
   @Action
   removeAllFromCart(item: Item) {
     this.remove(item);
-    transactionModule.cancelCurrentRequest();
+    paymentModule.cancelCurrentRequest();
     this.sendToTerminal();
   }
 
   @Action
   clearCart() {
     this.emptyItems();
-    transactionModule.cancelCurrentRequest();
+    paymentModule.cancelCurrentRequest();
     this.sendToTerminal();
   }
 

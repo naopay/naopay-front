@@ -10,22 +10,22 @@ import { Item } from "@/models/item";
 import { http } from "@/services/http";
 
 @Module
-class TransactionModule extends VuexModule {
+class PaymentModule extends VuexModule {
 
-  transactionWs: WebSocket | any = undefined;
+  paymentWs: WebSocket | any = undefined;
   status: PaymentStatus = PaymentStatus.NONE;
 
-  get transactionIsAccepted(): boolean {
+  get paymentAccepted(): boolean {
     return this.status === PaymentStatus.ACCEPTED;
   }
 
-  get transactionIsRejected(): boolean {
+  get paymentRejected(): boolean {
     return this.status === PaymentStatus.REJECTED;
   }
 
   @Mutation
-  setTransactionWs(ws: WebSocket) {
-    this.transactionWs = ws;
+  setPaymentWs(ws: WebSocket) {
+    this.paymentWs = ws;
   }
 
   @Mutation
@@ -35,8 +35,8 @@ class TransactionModule extends VuexModule {
 
   @Action
   cancelCurrentRequest() {
-    if (this.transactionWs) {
-      this.transactionWs?.close();
+    if (this.paymentWs) {
+      this.paymentWs?.close();
     }
     this.setStatus(PaymentStatus.NONE);
   }
@@ -71,7 +71,7 @@ class TransactionModule extends VuexModule {
       const transactionBlock = messageBlock.block as TransactionBlock;
       if (transactionBlock.subtype === "send") {
         if (messageBlock.amount !== transaction.price) {
-          terminalModule.sendToTerminal("transaction", { accepted: false });
+          terminalModule.sendToTerminal("payment", { accepted: false });
 
           this.setStatus(PaymentStatus.REJECTED);
 
@@ -87,7 +87,7 @@ class TransactionModule extends VuexModule {
           return;
         }
 
-        terminalModule.sendToTerminal("transaction", { accepted: true });
+        terminalModule.sendToTerminal("payment", { accepted: true });
 
         const items = [...cartModule.items];
         const totalAmount = cartModule.totalAmount.toString();
@@ -106,7 +106,7 @@ class TransactionModule extends VuexModule {
       }
     }
 
-    this.setTransactionWs(ws);
+    this.setPaymentWs(ws);
   }
 
   private async saveTransaction(items: Item[], total: string, totalNano: string, txid: string, sender: string, receiver: string) {
@@ -135,4 +135,4 @@ class TransactionModule extends VuexModule {
 
 }
 
-export const transactionModule = new TransactionModule({ store, name: "transaction" });
+export const paymentModule = new PaymentModule({ store, name: "transaction" });
