@@ -12,12 +12,9 @@
         </div>
       </div>
 
-      <button
-        @click="onClick"
-        class="w-full flex items-center justify-center h-16 rounded-b text-lighter text-xl bg-blue-600 transition-colors duration-200 active:bg-blue-800"
-      >
+      <Button :full="true" @click.native="onClick">
         Unlock
-      </button>
+      </Button>
     </div>
   </div>
 </template>
@@ -25,10 +22,12 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import Icon from "@/components/Icon.vue";
+import Button from "@/components/Button.vue";
 
 @Component({
   components: {
     Icon,
+    Button
   },
 })
 export default class InactiveModal extends Vue {
